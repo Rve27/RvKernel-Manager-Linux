@@ -45,7 +45,21 @@ object Utils {
             "$model ($coreCount cores)"
         }
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read cpu info", e)
+        logger.log(Level.SEVERE, "Failed to read CPU info", e)
+        "unknown"
+    }
+
+    fun getGpuModel(): String = runCatching {
+        val process = ProcessBuilder(
+            "bash", "-c",
+            "lspci | grep -i 'vga\\|3d\\|display' | cut -d ':' -f3 | head -n 1"
+        ).start()
+
+        val text = process.inputStream.bufferedReader().readText().trim()
+
+        text.ifBlank { "unknown" }
+    }.getOrElse { e ->
+        logger.log(Level.WARNING, "Failed to get GPU info", e)
         "unknown"
     }
 

@@ -21,6 +21,7 @@ import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Computer
 import com.composables.icons.materialsymbols.roundedfilled.Memory
 import com.composables.icons.materialsymbols.roundedfilled.Person
+import com.composables.icons.materialsymbols.roundedfilled.View_in_ar
 import com.rve.rvkernelmanager.ui.components.Card.ItemCard
 import com.rve.rvkernelmanager.ui.data.AppIcon
 import com.rve.rvkernelmanager.ui.data.HomeItem
@@ -75,6 +76,11 @@ fun HomeScreen(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
                 title = "CPU",
                 summary = deviceInfo.cpu
+            ),
+            HomeItem(
+                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.View_in_ar),
+                title = "GPU",
+                summary = deviceInfo.gpu
             ),
             HomeItem(
                 icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),

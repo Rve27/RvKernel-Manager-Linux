@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.DeviceInfo
 import com.rve.rvkernelmanager.util.Utils.getCpuModel
+import com.rve.rvkernelmanager.util.Utils.getGpuModel
 import com.rve.rvkernelmanager.util.Utils.getHostname
 import com.rve.rvkernelmanager.util.Utils.getKernelVersion
 import com.rve.rvkernelmanager.util.Utils.getOS
@@ -28,6 +29,7 @@ class HomeViewModel : ViewModel() {
                 hostname = getHostname(),
                 os = getOS(),
                 cpu = getCpuModel(),
+                gpu = getGpuModel(),
                 kernel = getKernelVersion()
             )
         }

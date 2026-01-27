@@ -5,5 +5,6 @@ data class DeviceInfo(
     val hostname: String = "RvEnterprises",
     val os: String = "RvOS",
     val cpu: String = "RvCPU",
+    val gpu: String = "RvGPU",
     val kernel: String = "RvKernel",
 )
