@@ -8,10 +8,10 @@ object Utils {
     const val TAG = "Utils"
     private val logger = Logger.getLogger(TAG)
 
-    fun getKernelVersion(): String = runCatching {
-        File("/proc/version").readText().trim()
+    fun getUserName(): String = runCatching {
+        System.getProperty("user.name")
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read /proc/version", e)
+        logger.log(Level.SEVERE, "Failed to get user name", e)
         "unknown"
     }
 
@@ -24,6 +24,13 @@ object Utils {
         }
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to read /etc/os-release", e)
+        "unknown"
+    }
+
+    fun getKernelVersion(): String = runCatching {
+        File("/proc/version").readText().trim()
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to read /proc/version", e)
         "unknown"
     }
 }

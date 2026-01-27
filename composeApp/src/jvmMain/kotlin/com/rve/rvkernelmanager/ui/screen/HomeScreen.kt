@@ -17,7 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.materialsymbols.MaterialSymbols
+import com.composables.icons.materialsymbols.roundedfilled.Person
 import com.rve.rvkernelmanager.ui.components.Card.ItemCard
+import com.rve.rvkernelmanager.ui.data.AppIcon
 import com.rve.rvkernelmanager.ui.data.HomeItem
 import com.rve.rvkernelmanager.ui.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -41,23 +44,28 @@ fun HomeScreen(
         topBar = topBar,
     ) { innerPadding ->
         val osIcons = when {
-            deviceInfo.os.contains("CachyOS") -> painterResource(Res.drawable.cachyos_logo)
-            deviceInfo.os.contains("Ubuntu") -> painterResource(Res.drawable.ubuntu_logo)
-            deviceInfo.os.contains("Linux Mint") -> painterResource(Res.drawable.linux_mint_logo)
-            deviceInfo.os.contains("Arch Linux") -> painterResource(Res.drawable.arch_linux_logo)
-            deviceInfo.os.contains("Manjaro") -> painterResource(Res.drawable.manjaro_logo)
-            deviceInfo.os.contains("Fedora") -> painterResource(Res.drawable.fedora_logo)
-            else -> painterResource(Res.drawable.ic_linux)
+            deviceInfo.os.contains("CachyOS") -> AppIcon.PainterIcon(painterResource(Res.drawable.cachyos_logo))
+            deviceInfo.os.contains("Ubuntu") -> AppIcon.PainterIcon(painterResource(Res.drawable.ubuntu_logo))
+            deviceInfo.os.contains("Linux Mint") -> AppIcon.PainterIcon(painterResource(Res.drawable.linux_mint_logo))
+            deviceInfo.os.contains("Arch Linux") -> AppIcon.PainterIcon(painterResource(Res.drawable.arch_linux_logo))
+            deviceInfo.os.contains("Manjaro") -> AppIcon.PainterIcon(painterResource(Res.drawable.manjaro_logo))
+            deviceInfo.os.contains("Fedora") -> AppIcon.PainterIcon(painterResource(Res.drawable.fedora_logo))
+            else -> AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux))
         }
 
         val deviceInfoItems = listOf(
+            HomeItem(
+                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Person),
+                title = "User",
+                summary = deviceInfo.user,
+            ),
             HomeItem(
                 icon = osIcons,
                 title = "Operating system",
                 summary = deviceInfo.os
             ),
             HomeItem(
-                icon = painterResource(Res.drawable.ic_linux),
+                icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
                 title = "Kernel",
                 summary = deviceInfo.kernel
             )
