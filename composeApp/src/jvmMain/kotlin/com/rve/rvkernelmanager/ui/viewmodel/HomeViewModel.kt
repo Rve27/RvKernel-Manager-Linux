@@ -8,6 +8,7 @@ import com.rve.rvkernelmanager.util.Utils.getGpuModel
 import com.rve.rvkernelmanager.util.Utils.getHostname
 import com.rve.rvkernelmanager.util.Utils.getKernelVersion
 import com.rve.rvkernelmanager.util.Utils.getOS
+import com.rve.rvkernelmanager.util.Utils.getTotalRam
 import com.rve.rvkernelmanager.util.Utils.getUsername
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ class HomeViewModel : ViewModel() {
                 os = getOS(),
                 cpu = getCpuModel(),
                 gpu = getGpuModel(),
+                ram = getTotalRam(),
                 kernel = getKernelVersion()
             )
         }

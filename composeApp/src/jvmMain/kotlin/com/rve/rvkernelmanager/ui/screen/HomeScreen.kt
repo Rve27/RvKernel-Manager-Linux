@@ -83,6 +83,11 @@ fun HomeScreen(
                 summary = deviceInfo.gpu
             ),
             HomeItem(
+                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                title = "RAM",
+                summary = deviceInfo.ram
+            ),
+            HomeItem(
                 icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
                 title = "Kernel",
                 summary = deviceInfo.kernel

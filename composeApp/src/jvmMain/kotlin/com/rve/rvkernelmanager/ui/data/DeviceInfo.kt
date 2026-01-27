@@ -6,5 +6,6 @@ data class DeviceInfo(
     val os: String = "RvOS",
     val cpu: String = "RvCPU",
     val gpu: String = "RvGPU",
+    val ram: String = "RvRAM",
     val kernel: String = "RvKernel",
 )

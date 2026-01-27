@@ -1,6 +1,7 @@
 package com.rve.rvkernelmanager.util
 
 import java.io.File
+import java.text.DecimalFormat
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -60,6 +61,24 @@ object Utils {
         text.ifBlank { "unknown" }
     }.getOrElse { e ->
         logger.log(Level.WARNING, "Failed to get GPU info", e)
+        "unknown"
+    }
+
+    fun getTotalRam(): String = runCatching {
+        File("/proc/meminfo").useLines { lines ->
+            val memTotalLine = lines.find { it.startsWith("MemTotal:") }
+            val kbValue = memTotalLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+
+            if (kbValue > 0) {
+                val gbValue = kbValue / (1024.0 * 1024.0)
+                val df = DecimalFormat("#.#")
+                "${df.format(gbValue)} GB"
+            } else {
+                "unknown"
+            }
+        }
+    }.getOrElse { e ->
+        logger.log(Level.WARNING, "Failed to get RAM info", e)
         "unknown"
     }
 
