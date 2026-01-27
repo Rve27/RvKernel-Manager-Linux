@@ -6,8 +6,8 @@ import androidx.compose.ui.window.application
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "RvKernel-Manager-Desktop",
+        title = "RvKernel Manager Desktop",
     ) {
-        App()
+        RvKernelManagerApp()
     }
 }
