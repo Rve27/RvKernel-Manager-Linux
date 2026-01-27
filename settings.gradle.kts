@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 rootProject.name = "RvKernel-Manager-Desktop"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
