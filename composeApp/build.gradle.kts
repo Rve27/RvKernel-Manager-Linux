@@ -39,8 +39,17 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)
-            packageName = "com.rve.rvkernelmanager"
+            packageName = "rvkernel-manager"
             packageVersion = "1.0.0"
+            description = "RvKernel Manager for Linux"
+            vendor = "RvEnterprises"
+
+            linux {
+                appCategory = "System"
+                iconFile.set(project.file("src/jvmMain/composeResources/drawable/icon_app.png"))
+                debMaintainer = "Rve27 <rve27github@gmail.com>"
+                shortcut = true
+            }
         }
     }
 }
