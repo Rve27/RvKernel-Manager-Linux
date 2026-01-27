@@ -1,11 +1,13 @@
 package com.rve.rvkernelmanager.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,10 +18,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rve.rvkernelmanager.ui.components.Card.ItemCard
+import com.rve.rvkernelmanager.ui.data.HomeItem
 import com.rve.rvkernelmanager.ui.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
 import rvkernel_manager_desktop.composeapp.generated.resources.Res
+import rvkernel_manager_desktop.composeapp.generated.resources.arch_linux_logo
+import rvkernel_manager_desktop.composeapp.generated.resources.cachyos_logo
+import rvkernel_manager_desktop.composeapp.generated.resources.fedora_logo
 import rvkernel_manager_desktop.composeapp.generated.resources.ic_linux
+import rvkernel_manager_desktop.composeapp.generated.resources.linux_mint_logo
+import rvkernel_manager_desktop.composeapp.generated.resources.manjaro_logo
+import rvkernel_manager_desktop.composeapp.generated.resources.ubuntu_logo
 
 @Composable
 fun HomeScreen(
@@ -31,6 +40,29 @@ fun HomeScreen(
     Scaffold(
         topBar = topBar,
     ) { innerPadding ->
+        val osIcons = when {
+            deviceInfo.os.contains("CachyOS") -> painterResource(Res.drawable.cachyos_logo)
+            deviceInfo.os.contains("Ubuntu") -> painterResource(Res.drawable.ubuntu_logo)
+            deviceInfo.os.contains("Linux Mint") -> painterResource(Res.drawable.linux_mint_logo)
+            deviceInfo.os.contains("Arch Linux") -> painterResource(Res.drawable.arch_linux_logo)
+            deviceInfo.os.contains("Manjaro") -> painterResource(Res.drawable.manjaro_logo)
+            deviceInfo.os.contains("Fedora") -> painterResource(Res.drawable.fedora_logo)
+            else -> painterResource(Res.drawable.ic_linux)
+        }
+
+        val deviceInfoItems = listOf(
+            HomeItem(
+                icon = osIcons,
+                title = "Operating system",
+                summary = deviceInfo.os
+            ),
+            HomeItem(
+                icon = painterResource(Res.drawable.ic_linux),
+                title = "Kernel",
+                summary = deviceInfo.kernel
+            )
+        )
+
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -40,12 +72,13 @@ fun HomeScreen(
         ) {
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
+                items(deviceInfoItems) { item ->
                     ItemCard(
-                        icon = painterResource(Res.drawable.ic_linux),
-                        title = "Kernel version",
-                        summary = deviceInfo.kernel
+                        icon = item.icon,
+                        title = item.title,
+                        summary = item.summary,
                     )
                 }
             }

@@ -14,4 +14,16 @@ object Utils {
         logger.log(Level.SEVERE, "Failed to read /proc/version", e)
         "unknown"
     }
+
+    fun getOS(): String = runCatching {
+        File("/etc/os-release").useLines { lines ->
+            lines.find { it.startsWith("PRETTY_NAME=") }
+                ?.substringAfter("=")
+                ?.replace("\"", "")
+                ?: "unknown"
+        }
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to read /etc/os-release", e)
+        "unknown"
+    }
 }
