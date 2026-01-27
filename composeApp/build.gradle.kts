@@ -37,7 +37,7 @@ compose.desktop {
         mainClass = "com.rve.rvkernelmanager.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)
             packageName = "com.rve.rvkernelmanager"
             packageVersion = "1.0.0"
         }
