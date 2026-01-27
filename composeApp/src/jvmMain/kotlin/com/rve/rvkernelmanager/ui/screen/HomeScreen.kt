@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Computer
+import com.composables.icons.materialsymbols.roundedfilled.Memory
 import com.composables.icons.materialsymbols.roundedfilled.Person
 import com.rve.rvkernelmanager.ui.components.Card.ItemCard
 import com.rve.rvkernelmanager.ui.data.AppIcon
@@ -64,12 +65,16 @@ fun HomeScreen(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.Rounded.Computer),
                 title = "Hostname",
                 summary = deviceInfo.hostname
-
             ),
             HomeItem(
                 icon = osIcons,
                 title = "Operating system",
                 summary = deviceInfo.os
+            ),
+            HomeItem(
+                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                title = "CPU",
+                summary = deviceInfo.cpu
             ),
             HomeItem(
                 icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),

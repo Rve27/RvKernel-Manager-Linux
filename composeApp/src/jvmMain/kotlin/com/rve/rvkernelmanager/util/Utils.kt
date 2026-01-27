@@ -34,6 +34,21 @@ object Utils {
         "unknown"
     }
 
+    fun getCpuModel(): String = runCatching {
+        File("/proc/cpuinfo").useLines { seq ->
+            val lines = seq.toList()
+            val model = lines.find { it.startsWith("model name") }
+                ?.substringAfter(":")
+                ?.trim()
+                ?: "unknown"
+            val coreCount = lines.count { it.startsWith("processor") }
+            "$model ($coreCount cores)"
+        }
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to read cpu info", e)
+        "unknown"
+    }
+
     fun getKernelVersion(): String = runCatching {
         File("/proc/version").readText().trim()
     }.getOrElse { e ->
