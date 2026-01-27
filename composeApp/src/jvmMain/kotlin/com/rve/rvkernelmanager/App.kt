@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
 import org.jetbrains.compose.resources.painterResource
 
 import rvkernel_manager_desktop.composeapp.generated.resources.Res
@@ -22,7 +23,7 @@ import rvkernel_manager_desktop.composeapp.generated.resources.compose_multiplat
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    RvKernelManagerTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier

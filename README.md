@@ -25,3 +25,6 @@ in your IDE’s toolbar or run it directly from the terminal:
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+
+### Color Scheme
+<img src="https://raw.githubusercontent.com/Rve27/RvKernel-Manager-Linux/main/color_scheme.png" width="100%" alt="Banner">
