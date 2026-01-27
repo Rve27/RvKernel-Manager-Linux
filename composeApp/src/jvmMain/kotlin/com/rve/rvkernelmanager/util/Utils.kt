@@ -8,10 +8,17 @@ object Utils {
     const val TAG = "Utils"
     private val logger = Logger.getLogger(TAG)
 
-    fun getUserName(): String = runCatching {
+    fun getUsername(): String = runCatching {
         System.getProperty("user.name")
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to get user name", e)
+        "unknown"
+    }
+
+    fun getHostname(): String = runCatching {
+        File("/etc/hostname").readText().trim()
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to read /etc/hostname", e)
         "unknown"
     }
 
