@@ -97,7 +97,7 @@ object Utils {
         val algoFile = File(firstDevice, "comp_algorithm")
         val algorithm = if (algoFile.exists()) {
             val content = algoFile.readText()
-            Regex("\\[(.*?)\\]").find(content)?.groupValues?.get(1) ?: "Unknown"
+            Regex("\\[(.*?)]").find(content)?.groupValues?.get(1) ?: "Unknown"
         } else {
             "unknown"
         }
