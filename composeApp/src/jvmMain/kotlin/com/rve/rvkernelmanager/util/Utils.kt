@@ -82,6 +82,46 @@ object Utils {
         "unknown"
     }
 
+    fun isZramActive(): Boolean {
+        val zramDir = File("/sys/block/")
+        return zramDir.exists() && (zramDir.listFiles()?.any { it.name.startsWith("zram") } == true)
+    }
+
+    fun getTotalZram(): String = runCatching {
+        val zramDir = File("/sys/block/")
+        val zramFiles = zramDir.listFiles { _, name -> name.startsWith("zram") }
+
+        if (zramFiles.isNullOrEmpty()) return "unknown"
+
+        val firstDevice = zramFiles.first()
+        val algoFile = File(firstDevice, "comp_algorithm")
+        val algorithm = if (algoFile.exists()) {
+            val content = algoFile.readText()
+            Regex("\\[(.*?)\\]").find(content)?.groupValues?.get(1) ?: "Unknown"
+        } else {
+            "unknown"
+        }
+
+        val totalBytes = zramFiles.sumOf { deviceDir ->
+            val sizeFile = File(deviceDir, "disksize")
+            if (sizeFile.exists()) {
+                sizeFile.readText().trim().toLongOrNull() ?: 0L
+            } else {
+                0L
+            }
+        }
+
+        if (totalBytes > 0) {
+            val gbValue = totalBytes / (1024.0 * 1024.0 * 1024.0)
+            val df = DecimalFormat("#.#")
+            "$algorithm (${df.format(gbValue)} GB)"
+        } else {
+            "unknown"
+        }
+    }.getOrElse {
+        "unknown"
+    }
+
     fun getKernelVersion(): String = runCatching {
         File("/proc/version").readText().trim()
     }.getOrElse { e ->

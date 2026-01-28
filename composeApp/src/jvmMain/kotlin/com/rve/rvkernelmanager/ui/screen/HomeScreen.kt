@@ -1,5 +1,13 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
+
 package com.rve.rvkernelmanager.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -87,11 +96,6 @@ fun HomeScreen(
                 title = "RAM",
                 summary = deviceInfo.ram
             ),
-            HomeItem(
-                icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
-                title = "Kernel",
-                summary = deviceInfo.kernel
-            )
         )
 
         Box(
@@ -110,6 +114,34 @@ fun HomeScreen(
                         icon = item.icon,
                         title = item.title,
                         summary = item.summary,
+                    )
+                }
+                item {
+                    AnimatedVisibility(
+                        visible = deviceInfo.isZramActive,
+                        enter = fadeIn(
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                        ) + expandIn(
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        ),
+                        exit = shrinkOut(
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        ) + fadeOut(
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                        )
+                    ) {
+                        ItemCard(
+                            icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                            title = "ZRAM",
+                            summary = deviceInfo.zram,
+                        )
+                    }
+                }
+                item {
+                    ItemCard(
+                        icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
+                        title = "Kernel",
+                        summary = deviceInfo.kernel,
                     )
                 }
             }

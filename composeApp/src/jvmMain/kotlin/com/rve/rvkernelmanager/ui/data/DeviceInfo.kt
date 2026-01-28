@@ -4,8 +4,10 @@ data class DeviceInfo(
     val user: String = "Rve",
     val hostname: String = "RvEnterprises",
     val os: String = "RvOS",
-    val cpu: String = "RvCPU",
-    val gpu: String = "RvGPU",
-    val ram: String = "RvRAM",
+    val cpu: String = "unknown",
+    val gpu: String = "unknown",
+    val ram: String = "unknown",
+    val isZramActive: Boolean = false,
+    val zram: String = "unknown",
     val kernel: String = "RvKernel",
 )
