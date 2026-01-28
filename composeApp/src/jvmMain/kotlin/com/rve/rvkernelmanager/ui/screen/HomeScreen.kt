@@ -138,6 +138,27 @@ fun HomeScreen(
                     }
                 }
                 item {
+                    AnimatedVisibility(
+                        visible = deviceInfo.isSwapActive,
+                        enter = fadeIn(
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                        ) + expandIn(
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        ),
+                        exit = shrinkOut(
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        ) + fadeOut(
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                        )
+                    ) {
+                        ItemCard(
+                            icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                            title = "Total swap memory",
+                            summary = deviceInfo.swap,
+                        )
+                    }
+                }
+                item {
                     ItemCard(
                         icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
                         title = "Kernel",

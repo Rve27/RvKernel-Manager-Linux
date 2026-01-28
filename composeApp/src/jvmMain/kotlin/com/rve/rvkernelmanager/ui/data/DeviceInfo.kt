@@ -9,5 +9,7 @@ data class DeviceInfo(
     val ram: String = "unknown",
     val isZramActive: Boolean = false,
     val zram: String = "unknown",
+    val isSwapActive: Boolean = false,
+    val swap: String = "unknown",
     val kernel: String = "RvKernel",
 )

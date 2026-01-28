@@ -122,6 +122,31 @@ object Utils {
         "unknown"
     }
 
+    fun isSwapActive(): Boolean = runCatching {
+        File("/proc/meminfo").useLines { lines ->
+            val swapTotalLine = lines.find { it.startsWith("SwapTotal:") }
+            val totalKb = swapTotalLine?.replace(Regex("\\D+"), "")?.toLongOrNull() ?: 0L
+            totalKb > 0
+        }
+    }.getOrElse { false }
+
+    fun getTotalSwap(): String = runCatching {
+        File("/proc/meminfo").useLines { lines ->
+            val swapTotalLine = lines.find { it.startsWith("SwapTotal:") }
+            val kbValue = swapTotalLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+
+            if (kbValue > 0) {
+                val gbValue = kbValue / (1024.0 * 1024.0)
+                val df = DecimalFormat("#.#")
+                "${df.format(gbValue)} GB"
+            } else {
+                "unknown"
+            }
+        }
+    }.getOrElse {
+        "unknown"
+    }
+
     fun getKernelVersion(): String = runCatching {
         File("/proc/version").readText().trim()
     }.getOrElse { e ->

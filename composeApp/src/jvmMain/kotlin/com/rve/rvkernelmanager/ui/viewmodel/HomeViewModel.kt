@@ -8,10 +8,12 @@ import com.rve.rvkernelmanager.util.Utils.getGpuModel
 import com.rve.rvkernelmanager.util.Utils.getHostname
 import com.rve.rvkernelmanager.util.Utils.getKernelVersion
 import com.rve.rvkernelmanager.util.Utils.getOS
+import com.rve.rvkernelmanager.util.Utils.getTotalSwap
 import com.rve.rvkernelmanager.util.Utils.getTotalRam
-import com.rve.rvkernelmanager.util.Utils.getUsername
-import com.rve.rvkernelmanager.util.Utils.isZramActive
 import com.rve.rvkernelmanager.util.Utils.getTotalZram
+import com.rve.rvkernelmanager.util.Utils.getUsername
+import com.rve.rvkernelmanager.util.Utils.isSwapActive
+import com.rve.rvkernelmanager.util.Utils.isZramActive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +38,8 @@ class HomeViewModel : ViewModel() {
                 ram = getTotalRam(),
                 isZramActive = isZramActive(),
                 zram = getTotalZram(),
+                isSwapActive = isSwapActive(),
+                swap = getTotalSwap(),
                 kernel = getKernelVersion()
             )
         }
