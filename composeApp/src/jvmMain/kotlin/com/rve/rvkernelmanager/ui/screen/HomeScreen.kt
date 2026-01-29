@@ -36,14 +36,14 @@ import com.rve.rvkernelmanager.ui.data.AppIcon
 import com.rve.rvkernelmanager.ui.data.HomeItem
 import com.rve.rvkernelmanager.ui.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
-import rvkernel_manager_desktop.composeapp.generated.resources.Res
-import rvkernel_manager_desktop.composeapp.generated.resources.arch_linux_logo
-import rvkernel_manager_desktop.composeapp.generated.resources.cachyos_logo
-import rvkernel_manager_desktop.composeapp.generated.resources.fedora_logo
-import rvkernel_manager_desktop.composeapp.generated.resources.ic_linux
-import rvkernel_manager_desktop.composeapp.generated.resources.linux_mint_logo
-import rvkernel_manager_desktop.composeapp.generated.resources.manjaro_logo
-import rvkernel_manager_desktop.composeapp.generated.resources.ubuntu_logo
+import rvkernel_manager_linux.composeapp.generated.resources.Res
+import rvkernel_manager_linux.composeapp.generated.resources.arch_linux_logo
+import rvkernel_manager_linux.composeapp.generated.resources.cachyos_logo
+import rvkernel_manager_linux.composeapp.generated.resources.fedora_logo
+import rvkernel_manager_linux.composeapp.generated.resources.ic_linux
+import rvkernel_manager_linux.composeapp.generated.resources.linux_mint_logo
+import rvkernel_manager_linux.composeapp.generated.resources.manjaro_logo
+import rvkernel_manager_linux.composeapp.generated.resources.ubuntu_logo
 
 @Composable
 fun HomeScreen() {
