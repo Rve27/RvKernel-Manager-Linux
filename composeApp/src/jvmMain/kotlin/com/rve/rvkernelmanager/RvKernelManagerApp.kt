@@ -19,6 +19,7 @@ import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
 import com.rve.rvkernelmanager.ui.components.Navigation.Home
 import com.rve.rvkernelmanager.ui.components.Navigation.CPU
 import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
+import com.rve.rvkernelmanager.ui.screen.CPUScreen
 
 @Composable
 fun RvKernelManagerApp() {
@@ -38,7 +39,7 @@ fun RvKernelManagerApp() {
                         HomeScreen()
                     }
                     composable<CPU> {
-                        DummyScreen()
+                        CPUScreen()
                     }
                     composable<Kernel> {
                         DummyScreen()

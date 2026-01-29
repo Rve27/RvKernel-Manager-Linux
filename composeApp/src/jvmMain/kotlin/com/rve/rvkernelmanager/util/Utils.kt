@@ -153,4 +153,31 @@ object Utils {
         logger.log(Level.SEVERE, "Failed to read /proc/version", e)
         "unknown"
     }
+
+    fun getCpuFreq(target: String): Long = runCatching {
+        val fileName = when (target.lowercase()) {
+            "max" -> "scaling_max_freq"
+            "min" -> "scaling_min_freq"
+            else -> return@runCatching 0L
+        }
+
+        val file = File("/sys/devices/system/cpu/cpu0/cpufreq/$fileName")
+
+        if (file.exists()) {
+            val freqKHz = file.readText().trim().toLong()
+            freqKHz / 1000
+        } else {
+            0L
+        }
+    }.getOrElse { e ->
+        logger.log(Level.WARNING, "Failed to read CPU $target freq", e)
+        0L
+    }
+
+    fun getCpuGovernor(): String = runCatching {
+        File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").readText().trim()
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to read CPU governor", e)
+        "unknown"
+    }
 }
