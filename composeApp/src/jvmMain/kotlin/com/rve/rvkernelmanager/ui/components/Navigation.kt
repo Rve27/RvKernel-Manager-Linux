@@ -1,16 +1,34 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.rve.rvkernelmanager.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationItemIconPosition
-import androidx.compose.material3.ShortNavigationBar
-import androidx.compose.material3.ShortNavigationBarArrangement
-import androidx.compose.material3.ShortNavigationBarItem
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -38,7 +56,10 @@ object Navigation {
     )
 
     @Composable
-    fun BottomNavigationBar(navController: NavController) {
+    fun BottomNavigationBar(
+        navController: NavController,
+        modifier: Modifier = Modifier
+    ) {
         val items = listOf(
             NavItem(
                 label = "Home",
@@ -63,40 +84,80 @@ object Navigation {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
-        ShortNavigationBar(arrangement = ShortNavigationBarArrangement.Centered) {
-            items.forEach { item ->
-                val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+        Surface(
+            modifier = modifier,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceBright,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            shadowElevation = 8.dp
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .animateContentSize(
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items.forEach { item ->
+                    val isSelected =
+                        currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
 
-                ShortNavigationBarItem(
-                    iconPosition = NavigationItemIconPosition.Start,
-                    icon = {
-                        Image(
-                            imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                            colorFilter = ColorFilter.tint(
-                                if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer
-                                else MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
-                            contentDescription = null
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = item.label,
-                            color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer
-                            else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    selected = isSelected,
-                    onClick = {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(
+                                if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                            )
+                            .clickable {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                            launchSingleTop = true
-                            restoreState = true
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            modifier = Modifier.animateContentSize(
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Image(
+                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                colorFilter = ColorFilter.tint(
+                                    if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                                ),
+                                contentDescription = null
+                            )
+                            AnimatedVisibility(
+                                visible = isSelected,
+                                enter = fadeIn(
+                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                ) + slideInHorizontally(
+                                    animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                ),
+                                exit = slideOutHorizontally(
+                                    animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                ) + fadeOut(
+                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                )
+                            ) {
+                                Text(
+                                    text = item.label,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                         }
                     }
-                )
+                }
             }
         }
     }
