@@ -12,11 +12,9 @@ import com.rve.rvkernelmanager.ui.components.Navigation.BottomNavigationBar
 import com.rve.rvkernelmanager.ui.screen.DummyScreen
 import com.rve.rvkernelmanager.ui.screen.HomeScreen
 import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
-import kotlinx.serialization.Serializable
-
-@Serializable object Home
-@Serializable object CPU
-@Serializable object Kernel
+import com.rve.rvkernelmanager.ui.components.Navigation.Home
+import com.rve.rvkernelmanager.ui.components.Navigation.CPU
+import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
 
 @Composable
 fun RvKernelManagerApp() {

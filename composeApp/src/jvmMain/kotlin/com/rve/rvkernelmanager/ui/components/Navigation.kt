@@ -23,11 +23,13 @@ import com.composables.icons.materialsymbols.rounded.Memory
 import com.composables.icons.materialsymbols.roundedfilled.Home
 import com.composables.icons.materialsymbols.roundedfilled.Lists
 import com.composables.icons.materialsymbols.roundedfilled.Memory
-import com.rve.rvkernelmanager.CPU
-import com.rve.rvkernelmanager.Home
-import com.rve.rvkernelmanager.Kernel
+import kotlinx.serialization.Serializable
 
 object Navigation {
+    @Serializable object Home
+    @Serializable object CPU
+    @Serializable object Kernel
+
     data class NavItem(
         val label: String,
         val route: Any,
