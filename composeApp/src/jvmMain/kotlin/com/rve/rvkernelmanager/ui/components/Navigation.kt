@@ -95,7 +95,7 @@ object Navigation {
                 modifier = Modifier
                     .padding(8.dp)
                     .animateContentSize(
-                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -124,7 +124,7 @@ object Navigation {
                     ) {
                         Row(
                             modifier = Modifier.animateContentSize(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
                             ),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -140,14 +140,14 @@ object Navigation {
                             AnimatedVisibility(
                                 visible = isSelected,
                                 enter = fadeIn(
-                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                    animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
                                 ) + slideInHorizontally(
-                                    animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                    animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
                                 ),
                                 exit = slideOutHorizontally(
-                                    animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                    animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
                                 ) + fadeOut(
-                                    animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                    animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
                                 )
                             ) {
                                 Text(
