@@ -46,15 +46,11 @@ import rvkernel_manager_desktop.composeapp.generated.resources.manjaro_logo
 import rvkernel_manager_desktop.composeapp.generated.resources.ubuntu_logo
 
 @Composable
-fun HomeScreen(
-    topBar: @Composable () -> Unit
-) {
+fun HomeScreen() {
     val viewModel = HomeViewModel()
     val deviceInfo by viewModel.deviceInfo.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = topBar,
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         val osIcons = when {
             deviceInfo.os.contains("CachyOS") -> AppIcon.PainterIcon(painterResource(Res.drawable.cachyos_logo))
             deviceInfo.os.contains("Ubuntu") -> AppIcon.PainterIcon(painterResource(Res.drawable.ubuntu_logo))
