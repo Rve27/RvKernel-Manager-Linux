@@ -13,15 +13,10 @@ This is a Kotlin Multiplatform project targeting Desktop (JVM).
 
 To build and run the development version of the desktop app, use the run configuration from the run widget
 in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
+- on Linux
   ```shell
   ./gradlew :composeApp:run
   ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
-
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
