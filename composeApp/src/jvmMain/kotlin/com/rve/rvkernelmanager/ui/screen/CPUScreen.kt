@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package com.rve.rvkernelmanager.ui.screen
 
 import androidx.compose.foundation.Image
@@ -5,26 +7,42 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.MaterialSymbols
@@ -40,6 +58,13 @@ import com.rve.rvkernelmanager.ui.viewmodel.CPUViewModel
 fun CPUScreen() {
     val viewModel = CPUViewModel()
     val cpuInfo by viewModel.cpuInfo.collectAsStateWithLifecycle()
+    val availableFreqs by viewModel.availableFreqs.collectAsStateWithLifecycle()
+    val availableGovernors by viewModel.availableGovernors.collectAsStateWithLifecycle()
+
+    var showAvailableFreqsDialog by remember { mutableStateOf(false) }
+    var showAvailableGovernorsDialog by remember { mutableStateOf(false) }
+    var availableFreqsDialogTitle by remember { mutableStateOf("") }
+    var isMaxFreq by remember { mutableStateOf(false) }
 
     Scaffold { innerPadding ->
         val cpuItems = listOf(
@@ -47,19 +72,32 @@ fun CPUScreen() {
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
                 title = "Minimum frequency",
                 summary = "${cpuInfo.minFreq} MHz",
-                onClick = { }
+                onClick = {
+                    availableFreqsDialogTitle = "Select Minimum Frequency"
+                    viewModel.getAvailableFreqs()
+                    showAvailableFreqsDialog = true
+                    isMaxFreq = false
+                }
             ),
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
                 title = "Maximum frequency",
                 summary = "${cpuInfo.maxFreq} MHz",
-                onClick = { }
+                onClick = {
+                    availableFreqsDialogTitle = "Select Maximum Frequency"
+                    viewModel.getAvailableFreqs()
+                    showAvailableFreqsDialog = true
+                    isMaxFreq = true
+                }
             ),
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Manufacturing),
                 title = "Governor",
                 summary = cpuInfo.governor,
-                onClick = { }
+                onClick = {
+                    viewModel.getAvailableGovernors()
+                    showAvailableGovernorsDialog = true
+                }
             ),
         )
 
@@ -125,6 +163,136 @@ fun CPUScreen() {
                     }
                 }
             }
+        }
+
+        if (showAvailableFreqsDialog) {
+            AlertDialog(
+                onDismissRequest = { showAvailableFreqsDialog = false },
+                title = { Text(availableFreqsDialogTitle) },
+                text = {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy((4).dp)
+                    ) {
+                        if (availableFreqs.isEmpty()) {
+                            item {
+                                Text("No frequencies found or access denied.")
+                            }
+                        } else {
+                            itemsIndexed(availableFreqs) { index, freq ->
+                                val isChecked = if (isMaxFreq) {
+                                    freq == cpuInfo.maxFreq
+                                } else {
+                                    freq == cpuInfo.minFreq
+                                }
+
+                                val shape = when (index) {
+                                    0 ->
+                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape)
+                                            .copy(
+                                                topStart = CornerSize(100),
+                                                topEnd = CornerSize(100)
+                                            )
+
+                                    availableFreqs.lastIndex ->
+                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape)
+                                            .copy(
+                                                bottomStart = CornerSize(100),
+                                                bottomEnd = CornerSize(100)
+                                            )
+
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                }
+                                ToggleButton(
+                                    checked = isChecked,
+                                    onCheckedChange = {},
+                                    contentPadding = PaddingValues(16.dp),
+                                    shapes = ToggleButtonDefaults.shapes(
+                                        shape = shape,
+                                        checkedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .semantics { role = Role.RadioButton },
+                                ) {
+                                    Text("$freq MHz")
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showAvailableFreqsDialog = false },
+                        shapes = ButtonDefaults.shapes()
+                    ) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
+
+        if (showAvailableGovernorsDialog) {
+            AlertDialog(
+                onDismissRequest = { showAvailableGovernorsDialog = false },
+                title = { Text("Select CPU Governor") },
+                text = {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy((4).dp)
+                    ) {
+                        if (availableGovernors.isEmpty()) {
+                            item {
+                                Text("No governors found or access denied.")
+                            }
+                        } else {
+                            itemsIndexed(availableGovernors) { index, governor ->
+                                val shape = when (index) {
+                                    0 ->
+                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape)
+                                            .copy(
+                                                topStart = CornerSize(100),
+                                                topEnd = CornerSize(100)
+                                            )
+
+                                    availableGovernors.lastIndex ->
+                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape)
+                                            .copy(
+                                                bottomStart = CornerSize(100),
+                                                bottomEnd = CornerSize(100)
+                                            )
+
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                }
+                                ToggleButton(
+                                    checked = cpuInfo.governor == governor,
+                                    onCheckedChange = {},
+                                    contentPadding = PaddingValues(16.dp),
+                                    shapes = ToggleButtonDefaults.shapes(
+                                        shape = shape,
+                                        checkedShape = ButtonGroupDefaults.connectedButtonCheckedShape,
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .semantics { role = Role.RadioButton },
+                                ) {
+                                    Text(governor)
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showAvailableGovernorsDialog = false },
+                        shapes = ButtonDefaults.shapes()
+                    ) {
+                        Text("Close")
+                    }
+                }
+            )
         }
     }
 }

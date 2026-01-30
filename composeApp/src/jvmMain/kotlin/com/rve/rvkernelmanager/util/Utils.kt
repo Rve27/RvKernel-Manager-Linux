@@ -174,10 +174,44 @@ object Utils {
         0L
     }
 
+    fun getAvailableCpuFreqs(): List<Long> = runCatching {
+        val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies")
+
+        if (file.exists()) {
+            file.readText()
+                .trim()
+                .split(Regex("\\s+"))
+                .mapNotNull { it.toLongOrNull() }
+                .map { it / 1000 }
+                .sorted()
+        } else {
+            emptyList()
+        }
+    }.getOrElse { e ->
+        logger.log(Level.WARNING, "Failed to read available CPU frequencies", e)
+        emptyList()
+    }
+
     fun getCpuGovernor(): String = runCatching {
         File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").readText().trim()
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to read CPU governor", e)
         "unknown"
+    }
+
+    fun getAvailableCpuGovernor(): List<String> = runCatching {
+        val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors")
+
+        if (file.exists()) {
+            file.readText()
+                .trim()
+                .split(Regex("\\s+"))
+                .sorted()
+        } else {
+            emptyList()
+        }
+    }.getOrElse { e ->
+        logger.log(Level.WARNING, "Failed to read available CPU governor", e)
+        emptyList()
     }
 }
