@@ -49,7 +49,7 @@ object List {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -57,12 +57,12 @@ object List {
                     is AppIcon.PainterIcon -> Image(
                         painter = icon.painter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
                     )
                     is AppIcon.ImageVectorIcon -> Image(
                         imageVector = icon.imageVector,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
                     )
                 }
             }
@@ -99,7 +99,7 @@ object List {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -107,12 +107,12 @@ object List {
                     is AppIcon.PainterIcon -> Image(
                         painter = icon.painter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
                     )
                     is AppIcon.ImageVectorIcon -> Image(
                         imageVector = icon.imageVector,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
                     )
                 }
             }
