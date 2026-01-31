@@ -207,6 +207,53 @@ object Utils {
         emptyList()
     }
 
+    fun hasCpuBoost(): Boolean {
+        return File("/sys/devices/system/cpu/intel_pstate/no_turbo").exists() ||
+                File("/sys/devices/system/cpu/cpufreq/boost").exists()
+    }
+
+    fun isCpuBoostEnabled(): Boolean = runCatching {
+        val intelNoTurbo = File("/sys/devices/system/cpu/intel_pstate/no_turbo")
+        if (intelNoTurbo.exists()) {
+            return@runCatching intelNoTurbo.readText().trim() == "0"
+        }
+
+        val cpufreqBoost = File("/sys/devices/system/cpu/cpufreq/boost")
+        if (cpufreqBoost.exists()) {
+            return@runCatching cpufreqBoost.readText().trim() == "1"
+        }
+
+        false
+    }.getOrElse {
+        false
+    }
+
+    fun setCpuBoost(enable: Boolean): Boolean = runCatching {
+        var command = ""
+
+        if (File("/sys/devices/system/cpu/intel_pstate/no_turbo").exists()) {
+            val value = if (enable) "0" else "1"
+            command = "echo $value | tee /sys/devices/system/cpu/intel_pstate/no_turbo"
+        }
+        else if (File("/sys/devices/system/cpu/cpufreq/boost").exists()) {
+            val value = if (enable) "1" else "0"
+            command = "echo $value | tee /sys/devices/system/cpu/cpufreq/boost"
+        }
+
+        if (command.isNotEmpty()) {
+            val process = ProcessBuilder(
+                "pkexec", "sh", "-c", command
+            ).start()
+            val exitCode = process.waitFor()
+            exitCode == 0
+        } else {
+            false
+        }
+    }.getOrElse {
+        logger.log(Level.SEVERE, "Failed to set CPU boost", it)
+        false
+    }
+
     fun getCpuGovernor(): String = runCatching {
         File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").readText().trim()
     }.getOrElse { e ->

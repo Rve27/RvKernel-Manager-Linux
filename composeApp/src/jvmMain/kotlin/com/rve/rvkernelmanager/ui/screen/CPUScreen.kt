@@ -46,10 +46,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.MaterialSymbols
+import com.composables.icons.materialsymbols.roundedfilled.Bolt
 import com.composables.icons.materialsymbols.roundedfilled.Manufacturing
 import com.composables.icons.materialsymbols.roundedfilled.Memory
 import com.composables.icons.materialsymbols.roundedfilled.Speed
 import com.rve.rvkernelmanager.ui.components.List.ListItem
+import com.rve.rvkernelmanager.ui.components.List.SwitchListItem
 import com.rve.rvkernelmanager.ui.data.AppIcon
 import com.rve.rvkernelmanager.ui.data.cpu.CPUItem
 import com.rve.rvkernelmanager.ui.viewmodel.CPUViewModel
@@ -160,6 +162,16 @@ fun CPUScreen() {
                             summary = item.summary,
                             onClick = item.onClick
                         )
+                    }
+                    if (cpuInfo.hasBoost) {
+                        item {
+                            SwitchListItem(
+                                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Bolt),
+                                text = "CPU Boost / Turbo",
+                                checked = cpuInfo.isBoostEnabled,
+                                onCheckedChange = { viewModel.toggleCpuBoost(it) }
+                            )
+                        }
                     }
                 }
             }

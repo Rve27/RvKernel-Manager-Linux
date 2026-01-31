@@ -7,6 +7,9 @@ import com.rve.rvkernelmanager.util.Utils.getAvailableCpuFreqs
 import com.rve.rvkernelmanager.util.Utils.getAvailableCpuGovernor
 import com.rve.rvkernelmanager.util.Utils.getCpuFreq
 import com.rve.rvkernelmanager.util.Utils.getCpuGovernor
+import com.rve.rvkernelmanager.util.Utils.hasCpuBoost
+import com.rve.rvkernelmanager.util.Utils.isCpuBoostEnabled
+import com.rve.rvkernelmanager.util.Utils.setCpuBoost
 import com.rve.rvkernelmanager.util.Utils.setCpuFreq
 import com.rve.rvkernelmanager.util.Utils.setCpuGov
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +37,9 @@ class CPUViewModel : ViewModel() {
             _cpuInfo.value = CPUInfo(
                 minFreq = getCpuFreq(false),
                 maxFreq = getCpuFreq(true),
-                governor = getCpuGovernor()
+                governor = getCpuGovernor(),
+                hasBoost = hasCpuBoost(),
+                isBoostEnabled = isCpuBoostEnabled()
             )
         }
     }
@@ -63,6 +68,15 @@ class CPUViewModel : ViewModel() {
     fun setCpuFrequency(freq: Long, isMax: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuFreq(freq, isMax)
+            if (success) {
+                getCpuInfo()
+            }
+        }
+    }
+
+    fun toggleCpuBoost(enable: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = setCpuBoost(enable)
             if (success) {
                 getCpuInfo()
             }
