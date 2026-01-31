@@ -93,7 +93,7 @@ object Navigation {
                 modifier = Modifier
                     .padding(8.dp)
                     .animateContentSize(
-                        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -126,7 +126,7 @@ object Navigation {
                     ) {
                         Row(
                             modifier = Modifier.animateContentSize(
-                                animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
                             ),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -139,9 +139,7 @@ object Navigation {
                                 ),
                                 contentDescription = null
                             )
-                            AnimatedVisibility(
-                                visible = isSelected,
-                            ) {
+                            if (isSelected) {
                                 Text(
                                     text = item.label,
                                     color = MaterialTheme.colorScheme.onPrimary,
