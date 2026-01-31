@@ -85,8 +85,8 @@ object Navigation {
         Surface(
             modifier = modifier,
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceBright,
-            contentColor = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             shadowElevation = 8.dp
         ) {
             Row(
@@ -108,7 +108,7 @@ object Navigation {
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(
-                                if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
                             )
                             .clickable(
                                 interactionSource = interactionSource,
@@ -134,8 +134,8 @@ object Navigation {
                             Image(
                                 imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                                 colorFilter = ColorFilter.tint(
-                                    if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                                    else MaterialTheme.colorScheme.onSurfaceVariant
+                                    if (isSelected) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onPrimaryContainer
                                 ),
                                 contentDescription = null
                             )
@@ -144,7 +144,7 @@ object Navigation {
                             ) {
                                 Text(
                                     text = item.label,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    color = MaterialTheme.colorScheme.onPrimary,
                                     maxLines = 1,
                                     softWrap = true
                                 )
