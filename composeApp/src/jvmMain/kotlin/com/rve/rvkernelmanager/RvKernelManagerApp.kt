@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+
 package com.rve.rvkernelmanager
 
 import androidx.compose.foundation.background
@@ -11,9 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,21 +30,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.composables.icons.materialsymbols.MaterialSymbols
+import com.composables.icons.materialsymbols.roundedfilled.Add
+import com.composables.icons.materialsymbols.roundedfilled.Remove
 import com.rve.rvkernelmanager.ui.components.AppBar.SimpleTopAppBar
 import com.rve.rvkernelmanager.ui.components.Navigation.BottomNavigationBar
+import com.rve.rvkernelmanager.ui.components.Navigation.CPU
+import com.rve.rvkernelmanager.ui.components.Navigation.Home
+import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
+import com.rve.rvkernelmanager.ui.screen.CPUScreen
 import com.rve.rvkernelmanager.ui.screen.DummyScreen
 import com.rve.rvkernelmanager.ui.screen.HomeScreen
 import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
-import com.rve.rvkernelmanager.ui.components.Navigation.Home
-import com.rve.rvkernelmanager.ui.components.Navigation.CPU
-import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
-import com.rve.rvkernelmanager.ui.screen.CPUScreen
 import com.rve.rvkernelmanager.util.SettingsManager
 
 @Composable
@@ -147,21 +162,21 @@ private fun ColorPickerDialog(
 
                 Column {
                     Text("Red: ${(red * 255).toInt()}")
-                    Slider(
+                    SliderWithTrackIcons(
                         value = red,
                         onValueChange = { red = it }
                     )
                 }
                 Column {
                     Text("Green: ${(green * 255).toInt()}")
-                    Slider(
+                    SliderWithTrackIcons(
                         value = green,
                         onValueChange = { green = it }
                     )
                 }
                 Column {
                     Text("Blue: ${(blue * 255).toInt()}")
-                    Slider(
+                    SliderWithTrackIcons(
                         value = blue,
                         onValueChange = { blue = it }
                     )
@@ -203,6 +218,73 @@ private fun ColorPickerDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
+        }
+    )
+}
+
+@Composable
+private fun SliderWithTrackIcons(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+) {
+    val startIcon = rememberVectorPainter(MaterialSymbols.RoundedFilled.Remove)
+    val endIcon = rememberVectorPainter(MaterialSymbols.RoundedFilled.Add)
+
+    Slider(
+        value = value,
+        onValueChange = onValueChange,
+        track = { sliderState ->
+            val iconSize = DpSize(20.dp, 20.dp)
+            val iconPadding = 10.dp
+            val thumbTrackGapSize = 6.dp
+            val activeIconColor = SliderDefaults.colors().activeTickColor
+            val inactiveIconColor = SliderDefaults.colors().inactiveTickColor
+
+            val trackIconStart: DrawScope.(Offset, Color) -> Unit = { offset, color ->
+                translate(offset.x + iconPadding.toPx(), offset.y) {
+                    with(startIcon) {
+                        draw(iconSize.toSize(), colorFilter = ColorFilter.tint(color))
+                    }
+                }
+            }
+            val trackIconEnd: DrawScope.(Offset, Color) -> Unit = { offset, color ->
+                translate(offset.x - iconPadding.toPx() - iconSize.toSize().width, offset.y) {
+                    with(endIcon) {
+                        draw(iconSize.toSize(), colorFilter = ColorFilter.tint(color))
+                    }
+                }
+            }
+
+            SliderDefaults.Track(
+                sliderState = sliderState,
+                modifier = Modifier
+                    .height(36.dp)
+                    .drawWithContent {
+                        drawContent()
+
+                        val yOffset = size.height / 2 - iconSize.toSize().height / 2
+                        val activeTrackStart = 0f
+                        val activeTrackEnd = size.width * sliderState.coercedValueAsFraction - thumbTrackGapSize.toPx()
+
+                        val inactiveTrackStart = activeTrackEnd + thumbTrackGapSize.toPx() * 2
+                        val inactiveTrackEnd = size.width
+
+                        val activeTrackWidth = activeTrackEnd - activeTrackStart
+                        val inactiveTrackWidth = inactiveTrackEnd - inactiveTrackStart
+
+                        if (iconSize.toSize().width < activeTrackWidth - iconPadding.toPx() * 2) {
+                            trackIconStart(Offset(activeTrackStart, yOffset), activeIconColor)
+                            trackIconEnd(Offset(activeTrackEnd, yOffset), activeIconColor)
+                        }
+                        if (iconSize.toSize().width < inactiveTrackWidth - iconPadding.toPx() * 2) {
+                            trackIconStart(Offset(inactiveTrackStart, yOffset), inactiveIconColor)
+                            trackIconEnd(Offset(inactiveTrackEnd, yOffset), inactiveIconColor)
+                        }
+                    },
+                trackCornerSize = 12.dp,
+                drawStopIndicator = null,
+                thumbTrackGapSize = thumbTrackGapSize,
+            )
         }
     )
 }
