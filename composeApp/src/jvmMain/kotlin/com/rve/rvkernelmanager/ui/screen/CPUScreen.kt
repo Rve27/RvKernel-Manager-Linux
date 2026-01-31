@@ -25,12 +25,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -132,14 +134,14 @@ fun CPUScreen() {
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .clip(MaterialShapes.Cookie9Sided.toShape())
+                                        .background(MaterialTheme.colorScheme.primary)
                                         .padding(8.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Image(
                                         imageVector = MaterialSymbols.RoundedFilled.Memory,
-                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                         contentDescription = null
                                     )
                                 }
