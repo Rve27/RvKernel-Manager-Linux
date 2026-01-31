@@ -46,7 +46,7 @@ object Card {
                 Box(
                     modifier = Modifier
                         .clip(containerIconShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.primary)
                         .padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -54,12 +54,12 @@ object Card {
                         is AppIcon.PainterIcon -> Image(
                             painter = icon.painter,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                         )
                         is AppIcon.ImageVectorIcon -> Image(
                             imageVector = icon.imageVector,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
                         )
                     }
                 }
