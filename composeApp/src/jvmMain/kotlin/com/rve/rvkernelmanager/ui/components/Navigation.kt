@@ -4,13 +4,10 @@ package com.rve.rvkernelmanager.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -104,13 +102,17 @@ object Navigation {
                     val isSelected =
                         currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
 
+                    val interactionSource = remember { MutableInteractionSource() }
+
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(
                                 if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                             )
-                            .clickable {
+                            .clickable(
+                                interactionSource = interactionSource,
+                            ) {
                                 navController.navigate(item.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -139,20 +141,12 @@ object Navigation {
                             )
                             AnimatedVisibility(
                                 visible = isSelected,
-                                enter = fadeIn(
-                                    animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
-                                ) + slideInHorizontally(
-                                    animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
-                                ),
-                                exit = slideOutHorizontally(
-                                    animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
-                                ) + fadeOut(
-                                    animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
-                                )
                             ) {
                                 Text(
                                     text = item.label,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    maxLines = 1,
+                                    softWrap = true
                                 )
                             }
                         }
