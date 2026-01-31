@@ -8,6 +8,7 @@ kotlinx-serialization = "1.10.0"
 material3 = "1.11.0-alpha02"
 navigation = "2.9.1"
 composables-icons = "2.2.1"
+materialKolor = "4.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -24,6 +25,7 @@ kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-s
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 composables-icons-material-symbols-rounded = { module = "com.composables:icons-material-symbols-rounded-cmp", version.ref = "composables-icons" }
 composables-icons-material-symbols-rounded-filled = { module = "com.composables:icons-material-symbols-rounded-filled-cmp", version.ref = "composables-icons" }
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 
 [plugins]
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }

@@ -23,12 +23,14 @@ import androidx.compose.ui.unit.IntOffset
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.roundedfilled.Dark_mode
 import com.composables.icons.materialsymbols.roundedfilled.Light_mode
+import com.composables.icons.materialsymbols.roundedfilled.Palette
 
 object AppBar {
     @Composable
     fun SimpleTopAppBar(
         isDarkTheme: Boolean,
-        onThemeChange: () -> Unit
+        onThemeChange: () -> Unit,
+        openColorPicker: () -> Unit
     ) {
         TopAppBar(
             title = {
@@ -40,6 +42,13 @@ object AppBar {
                 )
             },
             actions = {
+                IconButton(onClick = openColorPicker) {
+                    Image(
+                        imageVector = MaterialSymbols.RoundedFilled.Palette,
+                        contentDescription = "Change Color Scheme",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                    )
+                }
                 IconButton(onClick = onThemeChange) {
                     val slideAnimationSpec = MaterialTheme.motionScheme.slowSpatialSpec<IntOffset>()
                     val fadeAnimationSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()

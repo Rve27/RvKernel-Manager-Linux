@@ -25,6 +25,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.composables.icons.material.symbols.rounded)
             implementation(libs.composables.icons.material.symbols.rounded.filled)
+            implementation(libs.material.kolor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
