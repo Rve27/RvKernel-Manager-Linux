@@ -18,8 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -64,31 +66,37 @@ fun HomeScreen() {
         val deviceInfoItems = listOf(
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Person),
+                containerIconShape = MaterialShapes.Ghostish.toShape(),
                 title = "User",
                 summary = deviceInfo.user,
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.Rounded.Computer),
+                containerIconShape = MaterialShapes.Clover4Leaf.toShape(),
                 title = "Hostname",
                 summary = deviceInfo.hostname
             ),
             HomeItem(
                 icon = osIcons,
+                containerIconShape = MaterialShapes.Cookie7Sided.toShape(),
                 title = "Operating system",
                 summary = deviceInfo.os
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                containerIconShape = MaterialShapes.Square.toShape(),
                 title = "CPU",
                 summary = deviceInfo.cpu
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.View_in_ar),
+                containerIconShape = MaterialShapes.Gem.toShape(),
                 title = "GPU",
                 summary = deviceInfo.gpu
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                containerIconShape = MaterialShapes.Square.toShape(),
                 title = "RAM",
                 summary = deviceInfo.ram
             ),
@@ -108,6 +116,7 @@ fun HomeScreen() {
                 items(deviceInfoItems) { item ->
                     ItemCard(
                         icon = item.icon,
+                        containerIconShape = item.containerIconShape,
                         title = item.title,
                         summary = item.summary,
                     )
@@ -128,6 +137,7 @@ fun HomeScreen() {
                     ) {
                         ItemCard(
                             icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                            containerIconShape = MaterialShapes.Square.toShape(),
                             title = "ZRAM",
                             summary = deviceInfo.zram,
                         )
@@ -149,6 +159,7 @@ fun HomeScreen() {
                     ) {
                         ItemCard(
                             icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                            containerIconShape = MaterialShapes.Square.toShape(),
                             title = "Total swap memory",
                             summary = deviceInfo.swap,
                         )
@@ -157,6 +168,7 @@ fun HomeScreen() {
                 item {
                     ItemCard(
                         icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
+                        containerIconShape = MaterialShapes.Circle.toShape(),
                         title = "Kernel",
                         summary = deviceInfo.kernel,
                     )
