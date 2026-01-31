@@ -8,6 +8,7 @@ import com.rve.rvkernelmanager.util.Utils.getAvailableCpuGovernor
 import com.rve.rvkernelmanager.util.Utils.getCpuFreq
 import com.rve.rvkernelmanager.util.Utils.getCpuGovernor
 import com.rve.rvkernelmanager.util.Utils.setCpuFreq
+import com.rve.rvkernelmanager.util.Utils.setCpuGov
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,6 +48,15 @@ class CPUViewModel : ViewModel() {
     fun getAvailableGovernors() {
         viewModelScope.launch(Dispatchers.IO) {
             _availableGovernors.value = getAvailableCpuGovernor()
+        }
+    }
+
+    fun setCpuGovernor(governor: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = setCpuGov(governor)
+            if (success) {
+                getCpuInfo()
+            }
         }
     }
 

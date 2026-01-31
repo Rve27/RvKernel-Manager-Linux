@@ -214,6 +214,20 @@ object Utils {
         "unknown"
     }
 
+    fun setCpuGov(governor: String): Boolean = runCatching {
+        val command = "echo $governor | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
+
+        val process = ProcessBuilder(
+            "pkexec", "sh", "-c", command
+        ).start()
+
+        val exitCode = process.waitFor()
+        exitCode == 0
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to set CPU governor", e)
+        false
+    }
+
     fun getAvailableCpuGovernor(): List<String> = runCatching {
         val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors")
 

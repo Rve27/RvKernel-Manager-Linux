@@ -271,7 +271,10 @@ fun CPUScreen() {
                                 }
                                 ToggleButton(
                                     checked = cpuInfo.governor == governor,
-                                    onCheckedChange = {},
+                                    onCheckedChange = {
+                                        viewModel.setCpuGovernor(governor)
+                                        showAvailableGovernorsDialog = false
+                                    },
                                     contentPadding = PaddingValues(16.dp),
                                     shapes = ToggleButtonDefaults.shapes(
                                         shape = shape,
