@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.rve.rvkernelmanager.ui.data.AppIcon
 
@@ -25,6 +26,7 @@ object Card {
     @Composable
     fun ItemCard(
         icon: AppIcon,
+        containerIconShape: Shape = CircleShape,
         title: String,
         summary: String,
     ) {
@@ -43,7 +45,7 @@ object Card {
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(CircleShape)
+                        .clip(containerIconShape)
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(8.dp),
                     contentAlignment = Alignment.Center
