@@ -89,9 +89,9 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun RvKernelManagerTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val darkTheme = isSystemInDarkTheme()
     val colorScheme = if (darkTheme) darkScheme else lightScheme
 
     MaterialExpressiveTheme(

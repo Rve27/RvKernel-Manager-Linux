@@ -1,10 +1,15 @@
 package com.rve.rvkernelmanager
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,10 +30,18 @@ import com.rve.rvkernelmanager.ui.screen.CPUScreen
 fun RvKernelManagerApp() {
     val navController = rememberNavController()
 
-    RvKernelManagerTheme {
+    val systemInDarkTheme = isSystemInDarkTheme()
+    var isDarkTheme by remember { mutableStateOf(systemInDarkTheme) }
+
+    RvKernelManagerTheme(darkTheme = isDarkTheme) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
-                topBar = { SimpleTopAppBar() },
+                topBar = {
+                    SimpleTopAppBar(
+                        isDarkTheme = isDarkTheme,
+                        onThemeChange = { isDarkTheme = !isDarkTheme }
+                    )
+                },
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
