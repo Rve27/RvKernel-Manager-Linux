@@ -13,17 +13,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.roundedfilled.Check
@@ -34,6 +36,7 @@ object List {
     @Composable
     fun ListItem(
         icon: AppIcon,
+        containerIconShape: Shape = MaterialShapes.Circle.toShape(),
         title: String,
         summary: String,
         onClick: (() -> Unit)? = null,
@@ -48,7 +51,7 @@ object List {
         ) {
             Box(
                 modifier = Modifier
-                    .clip(CircleShape)
+                    .clip(containerIconShape)
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
@@ -84,6 +87,7 @@ object List {
     @Composable
     fun SwitchListItem(
         icon: AppIcon,
+        containerIconShape: Shape = MaterialShapes.Circle.toShape(),
         text: String,
         checked: Boolean,
         onCheckedChange: (Boolean) -> Unit,
@@ -98,7 +102,7 @@ object List {
         ) {
             Box(
                 modifier = Modifier
-                    .clip(CircleShape)
+                    .clip(containerIconShape)
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
