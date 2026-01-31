@@ -31,8 +31,8 @@ class CPUViewModel : ViewModel() {
     fun getCpuInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             _cpuInfo.value = CPUInfo(
-                minFreq = getCpuFreq("min"),
-                maxFreq = getCpuFreq("max"),
+                minFreq = getCpuFreq(false),
+                maxFreq = getCpuFreq(true),
                 governor = getCpuGovernor()
             )
         }
