@@ -206,7 +206,10 @@ fun CPUScreen() {
                                 }
                                 ToggleButton(
                                     checked = isChecked,
-                                    onCheckedChange = {},
+                                    onCheckedChange = {
+                                        viewModel.setCpuFrequency(freq, isMaxFreq)
+                                        showAvailableFreqsDialog = false
+                                    },
                                     contentPadding = PaddingValues(16.dp),
                                     shapes = ToggleButtonDefaults.shapes(
                                         shape = shape,

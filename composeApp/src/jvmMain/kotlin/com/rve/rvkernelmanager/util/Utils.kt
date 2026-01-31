@@ -174,6 +174,24 @@ object Utils {
         0L
     }
 
+    fun setCpuFreq(freqMHz: Long, isMax: Boolean): Boolean = runCatching {
+        val type = if (isMax) "max" else "min"
+        val fileName = "scaling_${type}_freq"
+        val freqKHz = freqMHz * 1000
+
+        val command = "echo $freqKHz | tee /sys/devices/system/cpu/cpu*/cpufreq/$fileName"
+
+        val process = ProcessBuilder(
+            "pkexec", "sh", "-c", command
+        ).start()
+
+        val exitCode = process.waitFor()
+        exitCode == 0
+    }.getOrElse { e ->
+        logger.log(Level.SEVERE, "Failed to set CPU frequency", e)
+        false
+    }
+
     fun getAvailableCpuFreqs(): List<Long> = runCatching {
         val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies")
 

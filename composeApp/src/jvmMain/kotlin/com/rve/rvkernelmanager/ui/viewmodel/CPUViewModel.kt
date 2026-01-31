@@ -3,10 +3,11 @@ package com.rve.rvkernelmanager.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.cpu.CPUInfo
-import com.rve.rvkernelmanager.util.Utils.getCpuFreq
-import com.rve.rvkernelmanager.util.Utils.getCpuGovernor
 import com.rve.rvkernelmanager.util.Utils.getAvailableCpuFreqs
 import com.rve.rvkernelmanager.util.Utils.getAvailableCpuGovernor
+import com.rve.rvkernelmanager.util.Utils.getCpuFreq
+import com.rve.rvkernelmanager.util.Utils.getCpuGovernor
+import com.rve.rvkernelmanager.util.Utils.setCpuFreq
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,6 +47,15 @@ class CPUViewModel : ViewModel() {
     fun getAvailableGovernors() {
         viewModelScope.launch(Dispatchers.IO) {
             _availableGovernors.value = getAvailableCpuGovernor()
+        }
+    }
+
+    fun setCpuFrequency(freq: Long, isMax: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = setCpuFreq(freq, isMax)
+            if (success) {
+                getCpuInfo()
+            }
         }
     }
 }
