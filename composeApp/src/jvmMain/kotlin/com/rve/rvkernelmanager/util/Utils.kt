@@ -178,12 +178,7 @@ object Utils {
 
         val command = "echo $freqKHz | tee /sys/devices/system/cpu/cpu*/cpufreq/$fileName"
 
-        val process = ProcessBuilder(
-            "pkexec", "sh", "-c", command
-        ).start()
-
-        val exitCode = process.waitFor()
-        exitCode == 0
+        exec(command)
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to set CPU frequency", e)
         false
@@ -241,11 +236,7 @@ object Utils {
         }
 
         if (command.isNotEmpty()) {
-            val process = ProcessBuilder(
-                "pkexec", "sh", "-c", command
-            ).start()
-            val exitCode = process.waitFor()
-            exitCode == 0
+            exec(command)
         } else {
             false
         }
@@ -263,13 +254,7 @@ object Utils {
 
     fun setCpuGov(governor: String): Boolean = runCatching {
         val command = "echo $governor | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
-
-        val process = ProcessBuilder(
-            "pkexec", "sh", "-c", command
-        ).start()
-
-        val exitCode = process.waitFor()
-        exitCode == 0
+        exec(command)
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to set CPU governor", e)
         false
@@ -289,5 +274,18 @@ object Utils {
     }.getOrElse { e ->
         logger.log(Level.WARNING, "Failed to read available CPU governor", e)
         emptyList()
+    }
+
+    private fun exec(command: String): Boolean {
+        return try {
+            val process = ProcessBuilder(
+                "pkexec", "sh", "-c", command
+            ).start()
+            val exitCode = process.waitFor()
+            exitCode == 0
+        } catch (e: Exception) {
+            logger.log(Level.SEVERE, "Execution failed: $command", e)
+            false
+        }
     }
 }
