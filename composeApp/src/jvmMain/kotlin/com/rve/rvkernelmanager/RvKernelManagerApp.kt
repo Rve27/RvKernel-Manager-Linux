@@ -2,11 +2,13 @@
 
 package com.rve.rvkernelmanager
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -46,6 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.roundedfilled.Add
 import com.composables.icons.materialsymbols.roundedfilled.Remove
+import com.composables.icons.materialsymbols.roundedfilled.Restart_alt
 import com.rve.rvkernelmanager.ui.components.AppBar.SimpleTopAppBar
 import com.rve.rvkernelmanager.ui.components.Navigation.BottomNavigationBar
 import com.rve.rvkernelmanager.ui.components.Navigation.CPU
@@ -128,6 +133,8 @@ private fun ColorPickerDialog(
     onDismiss: () -> Unit,
     onColorSelected: (Color) -> Unit
 ) {
+    val defaultColor = Color(0xFFEBAC00)
+
     var red by remember { mutableStateOf(color.red) }
     var green by remember { mutableStateOf(color.green) }
     var blue by remember { mutableStateOf(color.blue) }
@@ -146,7 +153,30 @@ private fun ColorPickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Select Theme Color") },
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Select Theme Color",
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(
+                    onClick = {
+                        red = defaultColor.red
+                        green = defaultColor.green
+                        blue = defaultColor.blue
+                    },
+                ) {
+                    Image(
+                        imageVector = MaterialSymbols.RoundedFilled.Restart_alt,
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                    )
+                }
+            }
+        },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -159,7 +189,6 @@ private fun ColorPickerDialog(
                         .clip(RoundedCornerShape(12.dp))
                         .background(currentColor)
                 )
-
                 Column {
                     Text("Red: ${(red * 255).toInt()}")
                     SliderWithTrackIcons(
