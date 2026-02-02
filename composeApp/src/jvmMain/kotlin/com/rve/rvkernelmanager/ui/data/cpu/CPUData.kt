@@ -1,6 +1,7 @@
 package com.rve.rvkernelmanager.ui.data.cpu
 
-data class CPUInfo(
+data class CPUData(
+    val curFreq : Long = 0L,
     val minFreq: Long = 0L,
     val maxFreq: Long = 0L,
     val governor: String = "unknown",

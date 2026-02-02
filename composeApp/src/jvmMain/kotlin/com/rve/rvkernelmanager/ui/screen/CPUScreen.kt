@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -61,7 +60,7 @@ import com.rve.rvkernelmanager.ui.viewmodel.CPUViewModel
 @Composable
 fun CPUScreen() {
     val viewModel = CPUViewModel()
-    val cpuInfo by viewModel.cpuInfo.collectAsStateWithLifecycle()
+    val cpuData by viewModel.cpuData.collectAsStateWithLifecycle()
     val availableFreqs by viewModel.availableFreqs.collectAsStateWithLifecycle()
     val availableGovernors by viewModel.availableGovernors.collectAsStateWithLifecycle()
 
@@ -74,8 +73,14 @@ fun CPUScreen() {
         val cpuItems = listOf(
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
+                title = "Current frequency",
+                summary = "${cpuData.curFreq} MHz",
+                onClick = { /* nothing */ }
+            ),
+            CPUItem(
+                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
                 title = "Minimum frequency",
-                summary = "${cpuInfo.minFreq} MHz",
+                summary = "${cpuData.minFreq} MHz",
                 onClick = {
                     availableFreqsDialogTitle = "Select Minimum Frequency"
                     viewModel.getAvailableFreqs()
@@ -86,7 +91,7 @@ fun CPUScreen() {
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
                 title = "Maximum frequency",
-                summary = "${cpuInfo.maxFreq} MHz",
+                summary = "${cpuData.maxFreq} MHz",
                 onClick = {
                     availableFreqsDialogTitle = "Select Maximum Frequency"
                     viewModel.getAvailableFreqs()
@@ -97,7 +102,7 @@ fun CPUScreen() {
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Manufacturing),
                 title = "Governor",
-                summary = cpuInfo.governor,
+                summary = cpuData.governor,
                 onClick = {
                     viewModel.getAvailableGovernors()
                     showAvailableGovernorsDialog = true
@@ -165,12 +170,12 @@ fun CPUScreen() {
                             onClick = item.onClick
                         )
                     }
-                    if (cpuInfo.hasBoost) {
+                    if (cpuData.hasBoost) {
                         item {
                             SwitchListItem(
                                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Bolt),
                                 text = "CPU Boost / Turbo",
-                                checked = cpuInfo.isBoostEnabled,
+                                checked = cpuData.isBoostEnabled,
                                 onCheckedChange = { viewModel.toggleCpuBoost(it) }
                             )
                         }
@@ -194,9 +199,9 @@ fun CPUScreen() {
                         } else {
                             itemsIndexed(availableFreqs) { index, freq ->
                                 val isChecked = if (isMaxFreq) {
-                                    freq == cpuInfo.maxFreq
+                                    freq == cpuData.maxFreq
                                 } else {
-                                    freq == cpuInfo.minFreq
+                                    freq == cpuData.minFreq
                                 }
 
                                 val shape = when (index) {
@@ -284,7 +289,7 @@ fun CPUScreen() {
                                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes().shape
                                 }
                                 ToggleButton(
-                                    checked = cpuInfo.governor == governor,
+                                    checked = cpuData.governor == governor,
                                     onCheckedChange = {
                                         viewModel.setCpuGovernor(governor)
                                         showAvailableGovernorsDialog = false

@@ -154,10 +154,8 @@ object Utils {
         "unknown"
     }
 
-    fun getCpuFreq(isMax: Boolean): Long = runCatching {
-        val type = if (isMax) "max" else "min"
-        val fileName = "scaling_${type}_freq"
-        val file = File("/sys/devices/system/cpu/cpu0/cpufreq/$fileName")
+    fun getCpuFreq(target: String): Long = runCatching {
+        val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_${target}_freq")
 
         if (file.exists()) {
             val freqKHz = file.readText().trim().toLong()
@@ -166,8 +164,7 @@ object Utils {
             0L
         }
     }.getOrElse { e ->
-        val type = if (isMax) "max" else "min"
-        logger.log(Level.WARNING, "Failed to read CPU $type freq", e)
+        logger.log(Level.WARNING, "Failed to read CPU $target freq", e)
         0L
     }
 

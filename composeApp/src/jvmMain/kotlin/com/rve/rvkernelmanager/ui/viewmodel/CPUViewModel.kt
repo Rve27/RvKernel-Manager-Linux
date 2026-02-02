@@ -2,7 +2,7 @@ package com.rve.rvkernelmanager.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rve.rvkernelmanager.ui.data.cpu.CPUInfo
+import com.rve.rvkernelmanager.ui.data.cpu.CPUData
 import com.rve.rvkernelmanager.util.Utils.getAvailableCpuFreqs
 import com.rve.rvkernelmanager.util.Utils.getAvailableCpuGovernor
 import com.rve.rvkernelmanager.util.Utils.getCpuFreq
@@ -13,14 +13,16 @@ import com.rve.rvkernelmanager.util.Utils.setCpuBoost
 import com.rve.rvkernelmanager.util.Utils.setCpuFreq
 import com.rve.rvkernelmanager.util.Utils.setCpuGov
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class CPUViewModel : ViewModel() {
-    private val _cpuInfo = MutableStateFlow(CPUInfo())
-    val cpuInfo: StateFlow<CPUInfo> = _cpuInfo
+    private val _cpuData = MutableStateFlow(CPUData())
+    val cpuData: StateFlow<CPUData> = _cpuData
 
     private val _availableFreqs = MutableStateFlow<List<Long>>(emptyList())
     val availableFreqs: StateFlow<List<Long>> = _availableFreqs
@@ -30,18 +32,32 @@ class CPUViewModel : ViewModel() {
 
 
     init {
-        getCpuInfo()
+        getCpuData()
+        updateCurFreq()
     }
 
-    fun getCpuInfo() {
+    fun getCpuData() {
         viewModelScope.launch(Dispatchers.IO) {
-            _cpuInfo.value = CPUInfo(
-                minFreq = getCpuFreq(false),
-                maxFreq = getCpuFreq(true),
+            _cpuData.value = CPUData(
+                curFreq = getCpuFreq("cur"),
+                minFreq = getCpuFreq("min"),
+                maxFreq = getCpuFreq("max"),
                 governor = getCpuGovernor(),
                 hasBoost = hasCpuBoost(),
                 isBoostEnabled = isCpuBoostEnabled()
             )
+        }
+    }
+
+    fun updateCurFreq() {
+        viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                delay(3000)
+                val currentFreq = getCpuFreq("cur")
+                _cpuData.update { currentState ->
+                    currentState.copy(curFreq = currentFreq)
+                }
+            }
         }
     }
 
@@ -61,7 +77,7 @@ class CPUViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuGov(governor)
             if (success) {
-                _cpuInfo.update { currentState ->
+                _cpuData.update { currentState ->
                     currentState.copy(governor = governor)
                 }
             }
@@ -73,11 +89,11 @@ class CPUViewModel : ViewModel() {
             val success = setCpuFreq(freq, isMax)
             if (success) {
                 if (isMax) {
-                    _cpuInfo.update { currentState ->
+                    _cpuData.update { currentState ->
                         currentState.copy(maxFreq = freq)
                     }
                 } else {
-                    _cpuInfo.update { currentState ->
+                    _cpuData.update { currentState ->
                         currentState.copy(minFreq = freq)
                     }
                 }
@@ -89,7 +105,7 @@ class CPUViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuBoost(enable)
             if (success) {
-                _cpuInfo.update { currentState ->
+                _cpuData.update { currentState ->
                     currentState.copy(isBoostEnabled = enable)
                 }
             }
