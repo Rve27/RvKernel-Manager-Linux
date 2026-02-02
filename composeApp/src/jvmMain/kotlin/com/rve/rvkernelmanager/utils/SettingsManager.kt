@@ -1,4 +1,4 @@
-package com.rve.rvkernelmanager.util
+package com.rve.rvkernelmanager.utils
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb

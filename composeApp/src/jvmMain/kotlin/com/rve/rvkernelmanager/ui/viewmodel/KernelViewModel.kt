@@ -3,8 +3,8 @@ package com.rve.rvkernelmanager.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.kernel.UclampData
-import com.rve.rvkernelmanager.util.Utils.getUclamp
-import com.rve.rvkernelmanager.util.Utils.setUclamp
+import com.rve.rvkernelmanager.utils.kernel.UclampUtils.getUclamp
+import com.rve.rvkernelmanager.utils.kernel.UclampUtils.setUclamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
