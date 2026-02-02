@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -42,6 +44,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -57,7 +61,6 @@ import com.rve.rvkernelmanager.ui.components.Navigation.CPU
 import com.rve.rvkernelmanager.ui.components.Navigation.Home
 import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
 import com.rve.rvkernelmanager.ui.screen.CPUScreen
-import com.rve.rvkernelmanager.ui.screen.DummyScreen
 import com.rve.rvkernelmanager.ui.screen.HomeScreen
 import com.rve.rvkernelmanager.ui.screen.KernelScreen
 import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
@@ -234,6 +237,13 @@ private fun ColorPickerDialog(
                     },
                     label = { Text("Hex Code") },
                     prefix = { Text("#") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { onColorSelected(currentColor) }
+                    ),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
