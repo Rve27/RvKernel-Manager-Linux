@@ -59,6 +59,7 @@ import com.rve.rvkernelmanager.ui.components.Navigation.Kernel
 import com.rve.rvkernelmanager.ui.screen.CPUScreen
 import com.rve.rvkernelmanager.ui.screen.DummyScreen
 import com.rve.rvkernelmanager.ui.screen.HomeScreen
+import com.rve.rvkernelmanager.ui.screen.KernelScreen
 import com.rve.rvkernelmanager.ui.theme.RvKernelManagerTheme
 import com.rve.rvkernelmanager.util.SettingsManager
 
@@ -100,7 +101,7 @@ fun RvKernelManagerApp() {
                         CPUScreen()
                     }
                     composable<Kernel> {
-                        DummyScreen()
+                        KernelScreen()
                     }
                 }
             }
