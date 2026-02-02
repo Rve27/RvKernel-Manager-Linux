@@ -15,6 +15,7 @@ import com.rve.rvkernelmanager.util.Utils.setCpuGov
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CPUViewModel : ViewModel() {
@@ -60,7 +61,9 @@ class CPUViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuGov(governor)
             if (success) {
-                getCpuInfo()
+                _cpuInfo.update { currentState ->
+                    currentState.copy(governor = governor)
+                }
             }
         }
     }
@@ -69,7 +72,15 @@ class CPUViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuFreq(freq, isMax)
             if (success) {
-                getCpuInfo()
+                if (isMax) {
+                    _cpuInfo.update { currentState ->
+                        currentState.copy(maxFreq = freq)
+                    }
+                } else {
+                    _cpuInfo.update { currentState ->
+                        currentState.copy(minFreq = freq)
+                    }
+                }
             }
         }
     }
@@ -78,7 +89,9 @@ class CPUViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val success = setCpuBoost(enable)
             if (success) {
-                getCpuInfo()
+                _cpuInfo.update { currentState ->
+                    currentState.copy(isBoostEnabled = enable)
+                }
             }
         }
     }
