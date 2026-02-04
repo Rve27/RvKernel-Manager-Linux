@@ -8,7 +8,7 @@ kotlinx-serialization = "1.10.0"
 material3 = "1.11.0-alpha02"
 navigation = "2.9.1"
 composables-icons = "2.2.1"
-materialKolor = "4.1.0"
+materialKolor = "4.1.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
