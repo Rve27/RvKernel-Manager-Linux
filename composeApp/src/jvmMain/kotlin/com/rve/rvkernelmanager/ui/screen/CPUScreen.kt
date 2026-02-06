@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.screen
@@ -75,7 +104,7 @@ fun CPUScreen() {
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
                 title = "Current frequency",
                 summary = "${cpuData.curFreq} MHz",
-                onClick = { /* nothing */ }
+                onClick = { /* nothing */ },
             ),
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
@@ -86,7 +115,7 @@ fun CPUScreen() {
                     viewModel.getAvailableFreqs()
                     showAvailableFreqsDialog = true
                     isMaxFreq = false
-                }
+                },
             ),
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
@@ -97,7 +126,7 @@ fun CPUScreen() {
                     viewModel.getAvailableFreqs()
                     showAvailableFreqsDialog = true
                     isMaxFreq = true
-                }
+                },
             ),
             CPUItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Manufacturing),
@@ -106,7 +135,7 @@ fun CPUScreen() {
                 onClick = {
                     viewModel.getAvailableGovernors()
                     showAvailableGovernorsDialog = true
-                }
+                },
             ),
         )
 
@@ -120,9 +149,9 @@ fun CPUScreen() {
             Card(
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
                 ),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             ) {
                 LazyColumn {
                     item {
@@ -131,34 +160,34 @@ fun CPUScreen() {
                                 .fillMaxWidth()
                                 .padding(top = 16.dp)
                                 .padding(horizontal = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Box(
                                     modifier = Modifier
                                         .clip(MaterialShapes.Cookie9Sided.toShape())
                                         .background(MaterialTheme.colorScheme.primary)
                                         .padding(8.dp),
-                                    contentAlignment = Alignment.Center
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     Image(
                                         imageVector = MaterialSymbols.RoundedFilled.Memory,
                                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                                 Text(
                                     text = "CPU",
                                     style = MaterialTheme.typography.titleLarge,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.colorScheme.primary,
                                 )
                             }
                             HorizontalDivider(
                                 thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                     }
@@ -167,7 +196,7 @@ fun CPUScreen() {
                             icon = item.icon,
                             title = item.title,
                             summary = item.summary,
-                            onClick = item.onClick
+                            onClick = item.onClick,
                         )
                     }
                     if (cpuData.hasBoost) {
@@ -176,7 +205,7 @@ fun CPUScreen() {
                                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Bolt),
                                 text = "CPU Boost / Turbo",
                                 checked = cpuData.isBoostEnabled,
-                                onCheckedChange = { viewModel.toggleCpuBoost(it) }
+                                onCheckedChange = { viewModel.toggleCpuBoost(it) },
                             )
                         }
                     }
@@ -190,7 +219,7 @@ fun CPUScreen() {
                 title = { Text(availableFreqsDialogTitle) },
                 text = {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy((4).dp)
+                        verticalArrangement = Arrangement.spacedBy((4).dp),
                     ) {
                         if (availableFreqs.isEmpty()) {
                             item {
@@ -206,19 +235,23 @@ fun CPUScreen() {
 
                                 val shape = when (index) {
                                     0 ->
-                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
-                                                as RoundedCornerShape)
+                                        (
+                                            ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape
+                                            )
                                             .copy(
                                                 topStart = CornerSize(100),
-                                                topEnd = CornerSize(100)
+                                                topEnd = CornerSize(100),
                                             )
 
                                     availableFreqs.lastIndex ->
-                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
-                                                as RoundedCornerShape)
+                                        (
+                                            ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape
+                                            )
                                             .copy(
                                                 bottomStart = CornerSize(100),
-                                                bottomEnd = CornerSize(100)
+                                                bottomEnd = CornerSize(100),
                                             )
 
                                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes().shape
@@ -247,11 +280,11 @@ fun CPUScreen() {
                 confirmButton = {
                     TextButton(
                         onClick = { showAvailableFreqsDialog = false },
-                        shapes = ButtonDefaults.shapes()
+                        shapes = ButtonDefaults.shapes(),
                     ) {
                         Text("Close")
                     }
-                }
+                },
             )
         }
 
@@ -261,7 +294,7 @@ fun CPUScreen() {
                 title = { Text("Select CPU Governor") },
                 text = {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy((4).dp)
+                        verticalArrangement = Arrangement.spacedBy((4).dp),
                     ) {
                         if (availableGovernors.isEmpty()) {
                             item {
@@ -271,19 +304,23 @@ fun CPUScreen() {
                             itemsIndexed(availableGovernors) { index, governor ->
                                 val shape = when (index) {
                                     0 ->
-                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
-                                                as RoundedCornerShape)
+                                        (
+                                            ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape
+                                            )
                                             .copy(
                                                 topStart = CornerSize(100),
-                                                topEnd = CornerSize(100)
+                                                topEnd = CornerSize(100),
                                             )
 
                                     availableGovernors.lastIndex ->
-                                        (ButtonGroupDefaults.connectedMiddleButtonShapes().shape
-                                                as RoundedCornerShape)
+                                        (
+                                            ButtonGroupDefaults.connectedMiddleButtonShapes().shape
+                                                as RoundedCornerShape
+                                            )
                                             .copy(
                                                 bottomStart = CornerSize(100),
-                                                bottomEnd = CornerSize(100)
+                                                bottomEnd = CornerSize(100),
                                             )
 
                                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes().shape
@@ -312,11 +349,11 @@ fun CPUScreen() {
                 confirmButton = {
                     TextButton(
                         onClick = { showAvailableGovernorsDialog = false },
-                        shapes = ButtonDefaults.shapes()
+                        shapes = ButtonDefaults.shapes(),
                     ) {
                         Text("Close")
                     }
-                }
+                },
             )
         }
     }

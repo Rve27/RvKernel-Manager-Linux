@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.components
@@ -27,18 +56,14 @@ import com.composables.icons.materialsymbols.roundedfilled.Palette
 
 object AppBar {
     @Composable
-    fun SimpleTopAppBar(
-        isDarkTheme: Boolean,
-        onThemeChange: () -> Unit,
-        openColorPicker: () -> Unit
-    ) {
+    fun SimpleTopAppBar(isDarkTheme: Boolean, onThemeChange: () -> Unit, openColorPicker: () -> Unit) {
         TopAppBar(
             title = {
                 Text(
                     text = "RvKernel Manager Linux",
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             },
             actions = {
@@ -46,7 +71,7 @@ object AppBar {
                     Image(
                         imageVector = MaterialSymbols.RoundedFilled.Palette,
                         contentDescription = "Change Color Scheme",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                     )
                 }
                 IconButton(onClick = onThemeChange) {
@@ -58,23 +83,23 @@ object AppBar {
                         transitionSpec = {
                             if (targetState) {
                                 (slideInVertically(slideAnimationSpec) { height -> -height } + fadeIn(fadeAnimationSpec)) togetherWith
-                                        (slideOutVertically(slideAnimationSpec) { height -> height } + fadeOut(fadeAnimationSpec))
+                                    (slideOutVertically(slideAnimationSpec) { height -> height } + fadeOut(fadeAnimationSpec))
                             } else {
                                 (slideInVertically(slideAnimationSpec) { height -> height } + fadeIn(fadeAnimationSpec)) togetherWith
-                                        (slideOutVertically(slideAnimationSpec) { height -> -height } + fadeOut(fadeAnimationSpec))
+                                    (slideOutVertically(slideAnimationSpec) { height -> -height } + fadeOut(fadeAnimationSpec))
                             }.using(
-                                SizeTransform(clip = false)
+                                SizeTransform(clip = false),
                             )
                         },
                     ) { isDark ->
                         Image(
                             imageVector = if (isDark) MaterialSymbols.RoundedFilled.Light_mode else MaterialSymbols.RoundedFilled.Dark_mode,
                             contentDescription = if (isDark) "Switch to light mode" else "Switch to dark mode",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                         )
                     }
                 }
-            }
+            },
         )
     }
 }

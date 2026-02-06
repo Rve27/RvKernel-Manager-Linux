@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 package com.rve.rvkernelmanager.ui.components
 
 import androidx.compose.foundation.Image
@@ -24,12 +53,7 @@ import com.rve.rvkernelmanager.ui.data.AppIcon
 
 object Card {
     @Composable
-    fun ItemCard(
-        icon: AppIcon,
-        containerIconShape: Shape = CircleShape,
-        title: String,
-        summary: String,
-    ) {
+    fun ItemCard(icon: AppIcon, containerIconShape: Shape = CircleShape, title: String, summary: String) {
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceBright,
@@ -48,18 +72,19 @@ object Card {
                         .clip(containerIconShape)
                         .background(MaterialTheme.colorScheme.primary)
                         .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     when (icon) {
                         is AppIcon.PainterIcon -> Image(
                             painter = icon.painter,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         )
+
                         is AppIcon.ImageVectorIcon -> Image(
                             imageVector = icon.imageVector,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         )
                     }
                 }
@@ -67,12 +92,12 @@ object Card {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = summary,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

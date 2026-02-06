@@ -1,17 +1,68 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialShapes
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.toShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +100,7 @@ fun KernelScreen() {
                     uclampTarget = "max"
                     uclampValue = uclampData.max.toString()
                     showUclampDialog = true
-                }
+                },
             ),
             KernelItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
@@ -60,7 +111,7 @@ fun KernelScreen() {
                     uclampTarget = "min"
                     uclampValue = uclampData.min.toString()
                     showUclampDialog = true
-                }
+                },
             ),
             KernelItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Speed),
@@ -71,7 +122,7 @@ fun KernelScreen() {
                     uclampTarget = "min_rt_default"
                     uclampValue = uclampData.max.toString()
                     showUclampDialog = true
-                }
+                },
             ),
         )
 
@@ -85,9 +136,9 @@ fun KernelScreen() {
             Card(
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
                 ),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             ) {
                 LazyColumn {
                     if (uclampData.hasUclamp) {
@@ -97,34 +148,34 @@ fun KernelScreen() {
                                     .fillMaxWidth()
                                     .padding(top = 16.dp)
                                     .padding(horizontal = 16.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Box(
                                         modifier = Modifier
                                             .clip(MaterialShapes.Square.toShape())
                                             .background(MaterialTheme.colorScheme.primary)
                                             .padding(8.dp),
-                                        contentAlignment = Alignment.Center
+                                        contentAlignment = Alignment.Center,
                                     ) {
                                         Image(
                                             imageVector = MaterialSymbols.RoundedFilled.Developer_board,
                                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                            contentDescription = null
+                                            contentDescription = null,
                                         )
                                     }
                                     Text(
                                         text = "UClamp Parameters",
                                         style = MaterialTheme.typography.titleLarge,
-                                        color = MaterialTheme.colorScheme.primary
+                                        color = MaterialTheme.colorScheme.primary,
                                     )
                                 }
                                 HorizontalDivider(
                                     thickness = 2.dp,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.colorScheme.primary,
                                 )
                             }
                         }
@@ -133,7 +184,7 @@ fun KernelScreen() {
                                 icon = item.icon,
                                 title = item.title,
                                 summary = item.summary,
-                                onClick = item.onClick
+                                onClick = item.onClick,
                             )
                         }
                     }
@@ -164,19 +215,19 @@ fun KernelScreen() {
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Done,
                         ),
                         keyboardActions = KeyboardActions(
-                            onDone = { onApply() }
+                            onDone = { onApply() },
                         ),
                         label = { Text("Value") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 },
                 confirmButton = {
                     TextButton(
                         onClick = { onApply() },
-                        shapes = ButtonDefaults.shapes()
+                        shapes = ButtonDefaults.shapes(),
                     ) {
                         Text("Apply")
                     }
@@ -185,7 +236,7 @@ fun KernelScreen() {
                     TextButton(onClick = { showUclampDialog = false }) {
                         Text("Cancel")
                     }
-                }
+                },
             )
         }
     }

@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 package com.rve.rvkernelmanager.utils
 
 import java.io.File
@@ -25,7 +54,8 @@ object Utils {
 
     fun getOS(): String = runCatching {
         File("/etc/os-release").useLines { lines ->
-            lines.find { it.startsWith("PRETTY_NAME=") }
+            lines
+                .find { it.startsWith("PRETTY_NAME=") }
                 ?.substringAfter("=")
                 ?.replace("\"", "")
                 ?: "unknown"
@@ -38,10 +68,12 @@ object Utils {
     fun getCpuModel(): String = runCatching {
         File("/proc/cpuinfo").useLines { seq ->
             val lines = seq.toList()
-            val model = lines.find { it.startsWith("model name") }
-                ?.substringAfter(":")
-                ?.trim()
-                ?: "unknown"
+            val model =
+                lines
+                    .find { it.startsWith("model name") }
+                    ?.substringAfter(":")
+                    ?.trim()
+                    ?: "unknown"
             val coreCount = lines.count { it.startsWith("processor") }
             "$model ($coreCount cores)"
         }
@@ -51,12 +83,18 @@ object Utils {
     }
 
     fun getGpuModel(): String = runCatching {
-        val process = ProcessBuilder(
-            "bash", "-c",
-            "lspci | grep -i 'vga\\|3d\\|display' | cut -d ':' -f3 | head -n 1"
-        ).start()
+        val process =
+            ProcessBuilder(
+                "bash",
+                "-c",
+                "lspci | grep -i 'vga\\|3d\\|display' | cut -d ':' -f3 | head -n 1",
+            ).start()
 
-        val text = process.inputStream.bufferedReader().readText().trim()
+        val text =
+            process.inputStream
+                .bufferedReader()
+                .readText()
+                .trim()
 
         text.ifBlank { "unknown" }
     }.getOrElse { e ->
@@ -95,21 +133,23 @@ object Utils {
 
         val firstDevice = zramFiles.first()
         val algoFile = File(firstDevice, "comp_algorithm")
-        val algorithm = if (algoFile.exists()) {
-            val content = algoFile.readText()
-            Regex("\\[(.*?)]").find(content)?.groupValues?.get(1) ?: "Unknown"
-        } else {
-            "unknown"
-        }
-
-        val totalBytes = zramFiles.sumOf { deviceDir ->
-            val sizeFile = File(deviceDir, "disksize")
-            if (sizeFile.exists()) {
-                sizeFile.readText().trim().toLongOrNull() ?: 0L
+        val algorithm =
+            if (algoFile.exists()) {
+                val content = algoFile.readText()
+                Regex("\\[(.*?)]").find(content)?.groupValues?.get(1) ?: "Unknown"
             } else {
-                0L
+                "unknown"
             }
-        }
+
+        val totalBytes =
+            zramFiles.sumOf { deviceDir ->
+                val sizeFile = File(deviceDir, "disksize")
+                if (sizeFile.exists()) {
+                    sizeFile.readText().trim().toLongOrNull() ?: 0L
+                } else {
+                    0L
+                }
+            }
 
         if (totalBytes > 0) {
             val gbValue = totalBytes / (1024.0 * 1024.0 * 1024.0)
@@ -154,16 +194,18 @@ object Utils {
         "unknown"
     }
 
-    fun exec(command: String): Boolean {
-        return try {
-            val process = ProcessBuilder(
-                "pkexec", "sh", "-c", command
+    fun exec(command: String): Boolean = try {
+        val process =
+            ProcessBuilder(
+                "pkexec",
+                "sh",
+                "-c",
+                command,
             ).start()
-            val exitCode = process.waitFor()
-            exitCode == 0
-        } catch (e: Exception) {
-            logger.log(Level.SEVERE, "Execution failed: $command", e)
-            false
-        }
+        val exitCode = process.waitFor()
+        exitCode == 0
+    } catch (e: Exception) {
+        logger.log(Level.SEVERE, "Execution failed: $command", e)
+        false
     }
 }
