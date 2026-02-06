@@ -90,50 +90,52 @@ fun KernelScreen() {
                 modifier = Modifier.padding(16.dp)
             ) {
                 LazyColumn {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp)
-                                .padding(horizontal = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                    if (uclampData.hasUclamp) {
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp)
+                                    .padding(horizontal = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(MaterialShapes.Square.toShape())
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .padding(8.dp),
-                                    contentAlignment = Alignment.Center
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Image(
-                                        imageVector = MaterialSymbols.RoundedFilled.Developer_board,
-                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                                        contentDescription = null
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(MaterialShapes.Square.toShape())
+                                            .background(MaterialTheme.colorScheme.primary)
+                                            .padding(8.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Image(
+                                            imageVector = MaterialSymbols.RoundedFilled.Developer_board,
+                                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Text(
+                                        text = "UClamp Parameters",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary
                                     )
                                 }
-                                Text(
-                                    text = "UClamp Parameters",
-                                    style = MaterialTheme.typography.titleLarge,
+                                HorizontalDivider(
+                                    thickness = 2.dp,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            HorizontalDivider(
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.primary
+                        }
+                        items(kernelItems) { item ->
+                            ListItem(
+                                icon = item.icon,
+                                title = item.title,
+                                summary = item.summary,
+                                onClick = item.onClick
                             )
                         }
-                    }
-                    items(kernelItems) { item ->
-                        ListItem(
-                            icon = item.icon,
-                            title = item.title,
-                            summary = item.summary,
-                            onClick = item.onClick
-                        )
                     }
                 }
             }

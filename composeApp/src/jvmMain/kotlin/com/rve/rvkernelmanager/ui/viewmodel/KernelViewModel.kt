@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.kernel.UclampData
 import com.rve.rvkernelmanager.utils.kernel.UclampUtils.getUclamp
+import com.rve.rvkernelmanager.utils.kernel.UclampUtils.hasUclamp
 import com.rve.rvkernelmanager.utils.kernel.UclampUtils.setUclamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ class KernelViewModel : ViewModel() {
     fun getKernelData() {
         viewModelScope.launch(Dispatchers.IO) {
             _uclampData.value = UclampData(
+                hasUclamp = hasUclamp(),
                 max = getUclamp("max"),
                 min = getUclamp("min"),
                 minRt = getUclamp("min_rt_default")

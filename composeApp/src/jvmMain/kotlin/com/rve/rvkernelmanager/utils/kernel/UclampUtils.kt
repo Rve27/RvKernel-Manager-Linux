@@ -9,6 +9,10 @@ object UclampUtils {
     const val TAG = "UclampUtils"
     private val logger = Logger.getLogger(TAG)
 
+    fun hasUclamp(): Boolean {
+        return File("/proc/sys/kernel/sched_util_clamp_min").exists()
+    }
+
     fun getUclamp(target: String): Int = runCatching {
         val file = File("/proc/sys/kernel/sched_util_clamp_$target")
 
