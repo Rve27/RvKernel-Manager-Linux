@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.components
@@ -46,36 +75,28 @@ object Navigation {
     @Serializable object CPU
     @Serializable object Kernel
 
-    data class NavItem(
-        val label: String,
-        val route: Any,
-        val selectedIcon: ImageVector,
-        val unselectedIcon: ImageVector
-    )
+    data class NavItem(val label: String, val route: Any, val selectedIcon: ImageVector, val unselectedIcon: ImageVector)
 
     @Composable
-    fun BottomNavigationBar(
-        navController: NavController,
-        modifier: Modifier = Modifier
-    ) {
+    fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modifier) {
         val items = listOf(
             NavItem(
                 label = "Home",
                 route = Home,
                 selectedIcon = MaterialSymbols.RoundedFilled.Home,
-                unselectedIcon = MaterialSymbols.Rounded.Home
+                unselectedIcon = MaterialSymbols.Rounded.Home,
             ),
             NavItem(
                 label = "CPU",
                 route = CPU,
                 selectedIcon = MaterialSymbols.RoundedFilled.Memory,
-                unselectedIcon = MaterialSymbols.Rounded.Memory
+                unselectedIcon = MaterialSymbols.Rounded.Memory,
             ),
             NavItem(
                 label = "Kernel",
                 route = Kernel,
                 selectedIcon = MaterialSymbols.RoundedFilled.Lists,
-                unselectedIcon = MaterialSymbols.Rounded.Lists
+                unselectedIcon = MaterialSymbols.Rounded.Lists,
             ),
         )
 
@@ -87,16 +108,16 @@ object Navigation {
             shape = CircleShape,
             color = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            shadowElevation = 8.dp
+            shadowElevation = 8.dp,
         ) {
             Row(
                 modifier = Modifier
                     .padding(8.dp)
                     .animateContentSize(
-                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                        animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items.forEach { item ->
                     val isSelected =
@@ -108,7 +129,7 @@ object Navigation {
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(
-                                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                                if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
                             )
                             .clickable(
                                 interactionSource = interactionSource,
@@ -122,29 +143,29 @@ object Navigation {
                                 }
                             }
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Row(
                             modifier = Modifier.animateContentSize(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                             ),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             Image(
                                 imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
                                 colorFilter = ColorFilter.tint(
                                     if (isSelected) MaterialTheme.colorScheme.onPrimary
-                                    else MaterialTheme.colorScheme.onPrimaryContainer
+                                    else MaterialTheme.colorScheme.onPrimaryContainer,
                                 ),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                             if (isSelected) {
                                 Text(
                                     text = item.label,
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     maxLines = 1,
-                                    softWrap = true
+                                    softWrap = true,
                                 )
                             }
                         }

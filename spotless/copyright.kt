@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ * Copyright (c) $YEAR Rve <rve27github@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,18 +27,3 @@
 //
 // total hours wasted here = 254
 //
-package com.rve.rvkernelmanager.ui.data
-
-data class DeviceInfo(
-    val user: String = "Rve",
-    val hostname: String = "RvEnterprises",
-    val os: String = "RvOS",
-    val cpu: String = "unknown",
-    val gpu: String = "unknown",
-    val ram: String = "unknown",
-    val isZramActive: Boolean = false,
-    val zram: String = "unknown",
-    val isSwapActive: Boolean = false,
-    val swap: String = "unknown",
-    val kernel: String = "RvKernel",
-)

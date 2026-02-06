@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 package com.rve.rvkernelmanager.utils.cpu
 
 import com.rve.rvkernelmanager.utils.Utils
@@ -41,7 +70,8 @@ object CPUUtils {
         val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies")
 
         if (file.exists()) {
-            file.readText()
+            file
+                .readText()
                 .trim()
                 .split(Regex("\\s+"))
                 .mapNotNull { it.toLongOrNull() }
@@ -55,10 +85,8 @@ object CPUUtils {
         emptyList()
     }
 
-    fun hasCpuBoost(): Boolean {
-        return File("/sys/devices/system/cpu/intel_pstate/no_turbo").exists() ||
-                File("/sys/devices/system/cpu/cpufreq/boost").exists()
-    }
+    fun hasCpuBoost(): Boolean = File("/sys/devices/system/cpu/intel_pstate/no_turbo").exists() ||
+        File("/sys/devices/system/cpu/cpufreq/boost").exists()
 
     fun isCpuBoostEnabled(): Boolean = runCatching {
         val intelNoTurbo = File("/sys/devices/system/cpu/intel_pstate/no_turbo")
@@ -82,8 +110,7 @@ object CPUUtils {
         if (File("/sys/devices/system/cpu/intel_pstate/no_turbo").exists()) {
             val value = if (enable) "0" else "1"
             command = "echo $value | tee /sys/devices/system/cpu/intel_pstate/no_turbo"
-        }
-        else if (File("/sys/devices/system/cpu/cpufreq/boost").exists()) {
+        } else if (File("/sys/devices/system/cpu/cpufreq/boost").exists()) {
             val value = if (enable) "1" else "0"
             command = "echo $value | tee /sys/devices/system/cpu/cpufreq/boost"
         }
@@ -117,7 +144,8 @@ object CPUUtils {
         val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors")
 
         if (file.exists()) {
-            file.readText()
+            file
+                .readText()
                 .trim()
                 .split(Regex("\\s+"))
                 .sorted()

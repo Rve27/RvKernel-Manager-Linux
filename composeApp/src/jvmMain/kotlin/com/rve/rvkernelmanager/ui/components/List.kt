@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.components
@@ -47,25 +76,26 @@ object List {
                 .clickable(onClick = { onClick?.invoke() })
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier
                     .clip(containerIconShape)
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 when (icon) {
                     is AppIcon.PainterIcon -> Image(
                         painter = icon.painter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
                     )
+
                     is AppIcon.ImageVectorIcon -> Image(
                         imageVector = icon.imageVector,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
                     )
                 }
             }
@@ -73,12 +103,12 @@ object List {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = summary,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -98,25 +128,26 @@ object List {
                 .clickable(onClick = { onCheckedChange(!checked) })
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier
                     .clip(containerIconShape)
                     .background(MaterialTheme.colorScheme.tertiary)
                     .padding(8.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 when (icon) {
                     is AppIcon.PainterIcon -> Image(
                         painter = icon.painter,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
                     )
+
                     is AppIcon.ImageVectorIcon -> Image(
                         imageVector = icon.imageVector,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
                     )
                 }
             }
@@ -124,7 +155,7 @@ object List {
                 text = text,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             Switch(
                 checked = checked,
@@ -132,16 +163,18 @@ object List {
                 thumbContent = {
                     Crossfade(
                         targetState = checked,
-                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                        animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
                     ) { isChecked ->
                         Image(
                             imageVector = if (isChecked) MaterialSymbols.RoundedFilled.Check else MaterialSymbols.RoundedFilled.Close,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest),
-                            modifier = Modifier.size(SwitchDefaults.IconSize)
+                            colorFilter = ColorFilter.tint(
+                                if (isChecked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
+                            ),
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     }
-                }
+                },
             )
         }
     }

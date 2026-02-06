@@ -1,3 +1,32 @@
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager
@@ -80,7 +109,7 @@ fun RvKernelManagerApp() {
 
     RvKernelManagerTheme(
         seedColor = seedColor,
-        isDark = isDarkTheme
+        isDark = isDarkTheme,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
@@ -88,14 +117,14 @@ fun RvKernelManagerApp() {
                     SimpleTopAppBar(
                         isDarkTheme = isDarkTheme,
                         onThemeChange = { isDarkTheme = !isDarkTheme },
-                        openColorPicker = { showColorPicker = true }
+                        openColorPicker = { showColorPicker = true },
                     )
                 },
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
                     startDestination = Home,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
                 ) {
                     composable<Home> {
                         HomeScreen()
@@ -113,7 +142,7 @@ fun RvKernelManagerApp() {
                 navController = navController,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
+                    .padding(16.dp),
             )
 
             if (showColorPicker) {
@@ -124,7 +153,7 @@ fun RvKernelManagerApp() {
                         seedColor = newColor
                         SettingsManager.saveColor(newColor)
                         showColorPicker = false
-                    }
+                    },
                 )
             }
         }
@@ -132,11 +161,7 @@ fun RvKernelManagerApp() {
 }
 
 @Composable
-private fun ColorPickerDialog(
-    color: Color,
-    onDismiss: () -> Unit,
-    onColorSelected: (Color) -> Unit
-) {
+private fun ColorPickerDialog(color: Color, onDismiss: () -> Unit, onColorSelected: (Color) -> Unit) {
     val defaultColor = Color(0xFFEBAC00)
 
     var red by remember { mutableStateOf(color.red) }
@@ -145,7 +170,7 @@ private fun ColorPickerDialog(
 
     var hexString by remember {
         mutableStateOf(
-            String.format("%06X", (color.toArgb() and 0xFFFFFF))
+            String.format("%06X", (color.toArgb() and 0xFFFFFF)),
         )
     }
 
@@ -159,12 +184,12 @@ private fun ColorPickerDialog(
         onDismissRequest = onDismiss,
         title = {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Select Theme Color",
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 IconButton(
                     onClick = {
@@ -176,7 +201,7 @@ private fun ColorPickerDialog(
                     Image(
                         imageVector = MaterialSymbols.RoundedFilled.Restart_alt,
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                     )
                 }
             }
@@ -184,34 +209,34 @@ private fun ColorPickerDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(80.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(currentColor)
+                        .background(currentColor),
                 )
                 Column {
                     Text("Red: ${(red * 255).toInt()}")
                     SliderWithTrackIcons(
                         value = red,
-                        onValueChange = { red = it }
+                        onValueChange = { red = it },
                     )
                 }
                 Column {
                     Text("Green: ${(green * 255).toInt()}")
                     SliderWithTrackIcons(
                         value = green,
-                        onValueChange = { green = it }
+                        onValueChange = { green = it },
                     )
                 }
                 Column {
                     Text("Blue: ${(blue * 255).toInt()}")
                     SliderWithTrackIcons(
                         value = blue,
-                        onValueChange = { blue = it }
+                        onValueChange = { blue = it },
                     )
                 }
 
@@ -239,13 +264,13 @@ private fun ColorPickerDialog(
                     prefix = { Text("#") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = { onColorSelected(currentColor) }
+                        onDone = { onColorSelected(currentColor) },
                     ),
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
@@ -258,15 +283,12 @@ private fun ColorPickerDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     )
 }
 
 @Composable
-private fun SliderWithTrackIcons(
-    value: Float,
-    onValueChange: (Float) -> Unit,
-) {
+private fun SliderWithTrackIcons(value: Float, onValueChange: (Float) -> Unit) {
     val startIcon = rememberVectorPainter(MaterialSymbols.RoundedFilled.Remove)
     val endIcon = rememberVectorPainter(MaterialSymbols.RoundedFilled.Add)
 
@@ -325,6 +347,6 @@ private fun SliderWithTrackIcons(
                 drawStopIndicator = null,
                 thumbTrackGapSize = thumbTrackGapSize,
             )
-        }
+        },
     )
 }

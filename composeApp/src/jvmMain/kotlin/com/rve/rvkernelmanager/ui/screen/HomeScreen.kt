@@ -1,5 +1,33 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+/*
+ * Copyright (c) 2026 Rve <rve27github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 package com.rve.rvkernelmanager.ui.screen
 
@@ -74,31 +102,31 @@ fun HomeScreen() {
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.Rounded.Computer),
                 containerIconShape = MaterialShapes.Clover4Leaf.toShape(),
                 title = "Hostname",
-                summary = deviceInfo.hostname
+                summary = deviceInfo.hostname,
             ),
             HomeItem(
                 icon = osIcons,
                 containerIconShape = MaterialShapes.Cookie7Sided.toShape(),
                 title = "Operating system",
-                summary = deviceInfo.os
+                summary = deviceInfo.os,
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
                 containerIconShape = MaterialShapes.Square.toShape(),
                 title = "CPU",
-                summary = deviceInfo.cpu
+                summary = deviceInfo.cpu,
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.View_in_ar),
                 containerIconShape = MaterialShapes.Gem.toShape(),
                 title = "GPU",
-                summary = deviceInfo.gpu
+                summary = deviceInfo.gpu,
             ),
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
                 containerIconShape = MaterialShapes.Square.toShape(),
                 title = "RAM",
-                summary = deviceInfo.ram
+                summary = deviceInfo.ram,
             ),
         )
 
@@ -111,7 +139,7 @@ fun HomeScreen() {
         ) {
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 items(deviceInfoItems) { item ->
                     ItemCard(
@@ -125,15 +153,15 @@ fun HomeScreen() {
                     AnimatedVisibility(
                         visible = deviceInfo.isZramActive,
                         enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
                         ) + expandIn(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                         ),
                         exit = shrinkOut(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                         ) + fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-                        )
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                        ),
                     ) {
                         ItemCard(
                             icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
@@ -147,15 +175,15 @@ fun HomeScreen() {
                     AnimatedVisibility(
                         visible = deviceInfo.isSwapActive,
                         enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
                         ) + expandIn(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                         ),
                         exit = shrinkOut(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                         ) + fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-                        )
+                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                        ),
                     ) {
                         ItemCard(
                             icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
