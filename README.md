@@ -1,8 +1,13 @@
-# RvKernel Manager for Linux
+<div align="center">
+<h1>RvKernel Manager for Linux</h1>
+<img src="https://raw.githubusercontent.com/Rve27/RvKernel-Manager/main/.github/banner.png" width="100%" alt="Banner">
+</div>
 
-### Installation
+<br>
 
-#### Arch Linux
+## Installation
+
+### Arch Linux
 If you are using Arch Linux, the application is available in the AUR as `rvkernel-manager`
 
 You can install it using your preferred AUR helper (e.g., `yay`):
@@ -10,7 +15,7 @@ You can install it using your preferred AUR helper (e.g., `yay`):
 yay -S rvkernel-manager
 ```
 
-#### Ubuntu / Debian
+### Ubuntu / Debian
 If you are using Ubuntu or a Debian-based distribution, download the latest `.deb` file from the [Releases](https://github.com/Rve27/RvKernel-Manager-Linux/releases) page.
 
 Install it by running the following command in your terminal:
@@ -18,7 +23,7 @@ Install it by running the following command in your terminal:
 sudo apt install ./rvkernel-manager_*.deb
 ````
 
-#### Fedora / Red Hat
+### Fedora / Red Hat
 If you are using Fedora or a RedHat-based distribution, download the latest .rpm file from the [Releases](https://github.com/Rve27/RvKernel-Manager-Linux/releases) page.
 
 Install it by running the following command in your terminal:
@@ -26,7 +31,7 @@ Install it by running the following command in your terminal:
 sudo dnf install ./rvkernel-manager-*.rpm
 ```
 
-### Project Structure
+## Project Structure
 
 This is a Kotlin Multiplatform project targeting Desktop (JVM).
 
