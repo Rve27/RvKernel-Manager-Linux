@@ -1,3 +1,33 @@
+# RvKernel Manager for Linux
+
+### Installation
+
+#### Arch Linux
+If you are using Arch Linux, the application is available in the AUR as `rvkernel-manager`
+
+You can install it using your preferred AUR helper (e.g., `yay`):
+```bash
+yay -S rvkernel-manager
+```
+
+#### Ubuntu / Debian
+If you are using Ubuntu or a Debian-based distribution, download the latest `.deb` file from the [Releases](https://github.com/Rve27/RvKernel-Manager-Linux/releases) page.
+
+Install it by running the following command in your terminal:
+```bash
+sudo apt install ./rvkernel-manager_*.deb
+````
+
+#### Fedora / Red Hat
+If you are using Fedora or a RedHat-based distribution, download the latest .rpm file from the [Releases](https://github.com/Rve27/RvKernel-Manager-Linux/releases) page.
+
+Install it by running the following command in your terminal:
+```bash
+sudo dnf install ./rvkernel-manager-*.rpm
+```
+
+### Project Structure
+
 This is a Kotlin Multiplatform project targeting Desktop (JVM).
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
