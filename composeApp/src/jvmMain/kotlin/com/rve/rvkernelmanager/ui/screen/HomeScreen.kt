@@ -59,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Computer
 import com.composables.icons.materialsymbols.roundedfilled.Memory
@@ -79,8 +80,9 @@ import rvkernel_manager_linux.composeapp.generated.resources.manjaro_logo
 import rvkernel_manager_linux.composeapp.generated.resources.ubuntu_logo
 
 @Composable
-fun HomeScreen() {
-    val viewModel = HomeViewModel()
+fun HomeScreen(
+    viewModel: HomeViewModel = viewModel { HomeViewModel() }
+) {
     val deviceInfo by viewModel.deviceInfo.collectAsStateWithLifecycle()
 
     Scaffold { innerPadding ->
