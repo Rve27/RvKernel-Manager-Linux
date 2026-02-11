@@ -29,15 +29,11 @@
 //
 package com.rve.rvkernelmanager.utils.cpu
 
-import com.rve.rvkernelmanager.utils.Utils
+import com.rve.rvkernelmanager.utils.Log
 import com.rve.rvkernelmanager.utils.Utils.exec
 import java.io.File
-import java.util.logging.Level
-import java.util.logging.Logger
 
 object CPUUtils {
-    const val TAG = "CPUUtils"
-    private val logger = Logger.getLogger(TAG)
 
     fun getCpuFreq(target: String): Long = runCatching {
         val file = File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_${target}_freq")
@@ -49,7 +45,7 @@ object CPUUtils {
             0L
         }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to read CPU $target freq", e)
+        Log.e("CPUUtils", "Failed to read CPU $target freq", e)
         0L
     }
 
@@ -62,7 +58,7 @@ object CPUUtils {
 
         exec(command)
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to set CPU frequency", e)
+        Log.e("CPUUtils", "Failed to set CPU frequency", e)
         false
     }
 
@@ -81,7 +77,7 @@ object CPUUtils {
             emptyList()
         }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to read available CPU frequencies", e)
+        Log.e("CPUUtils", "Failed to read available CPU frequencies", e)
         emptyList()
     }
 
@@ -121,14 +117,14 @@ object CPUUtils {
             false
         }
     }.getOrElse {
-        logger.log(Level.SEVERE, "Failed to set CPU boost", it)
+        Log.e("CPUUtils", "Failed to set CPU boost", it)
         false
     }
 
     fun getCpuGovernor(): String = runCatching {
         File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").readText().trim()
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read CPU governor", e)
+        Log.e("CPUUtils", "Failed to read CPU governor", e)
         "unknown"
     }
 
@@ -136,7 +132,7 @@ object CPUUtils {
         val command = "echo $governor | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor"
         exec(command)
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to set CPU governor", e)
+        Log.e("CPUUtils", "Failed to set CPU governor", e)
         false
     }
 
@@ -153,7 +149,7 @@ object CPUUtils {
             emptyList()
         }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to read available CPU governor", e)
+        Log.e("CPUUtils", "Failed to read available CPU governor", e)
         emptyList()
     }
 }

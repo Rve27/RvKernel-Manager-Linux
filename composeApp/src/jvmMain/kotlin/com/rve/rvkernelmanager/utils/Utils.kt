@@ -31,24 +31,19 @@ package com.rve.rvkernelmanager.utils
 
 import java.io.File
 import java.text.DecimalFormat
-import java.util.logging.Level
-import java.util.logging.Logger
 
 object Utils {
-    const val TAG = "Utils"
-    private val logger = Logger.getLogger(TAG)
-
     fun getUsername(): String = runCatching {
         System.getProperty("user.name")
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to get user name", e)
+        Log.e("Utils", "Failed to get user name", e)
         "unknown"
     }
 
     fun getHostname(): String = runCatching {
         File("/etc/hostname").readText().trim()
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read /etc/hostname", e)
+        Log.e("Utils", "Failed to read /etc/hostname", e)
         "unknown"
     }
 
@@ -61,7 +56,7 @@ object Utils {
                 ?: "unknown"
         }
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read /etc/os-release", e)
+        Log.e("Utils", "Failed to read /etc/os-release", e)
         "unknown"
     }
 
@@ -78,7 +73,7 @@ object Utils {
             "$model ($coreCount threads)"
         }
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read CPU info", e)
+        Log.e("Utils", "Failed to read CPU info", e)
         "unknown"
     }
 
@@ -98,7 +93,7 @@ object Utils {
 
         text.ifBlank { "unknown" }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to get GPU info", e)
+        Log.e("Utils", "Failed to get GPU info", e)
         "unknown"
     }
 
@@ -115,17 +110,16 @@ object Utils {
             if (totalKb > 0) {
                 val usedKb = totalKb - availableKb
 
-                val df = DecimalFormat("#.##") // Menggunakan 2 desimal agar lebih presisi
+                val df = DecimalFormat("#.##")
                 fun toGb(kb: Long): String = df.format(kb / (1024.0 * 1024.0))
 
-                // Menggunakan format multi-line agar tampilannya berurutan ke bawah
                 "Total: ${toGb(totalKb)} GB\nUsed: ${toGb(usedKb)} GB\nFree: ${toGb(availableKb)} GB"
             } else {
                 "unknown"
             }
         }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to get RAM status", e)
+        Log.e("Utils", "Failed to get RAM status", e)
         "unknown"
     }
 
@@ -199,7 +193,7 @@ object Utils {
     fun getKernelVersion(): String = runCatching {
         File("/proc/version").readText().trim()
     }.getOrElse { e ->
-        logger.log(Level.SEVERE, "Failed to read /proc/version", e)
+        Log.e("Utils", "Failed to read /proc/version", e)
         "unknown"
     }
 
@@ -214,7 +208,7 @@ object Utils {
         val exitCode = process.waitFor()
         exitCode == 0
     } catch (e: Exception) {
-        logger.log(Level.SEVERE, "Execution failed: $command", e)
+        Log.e("Utils", "Execution failed: $command", e)
         false
     }
 }

@@ -27,35 +27,23 @@
 //
 // total hours wasted here = 254
 //
-package com.rve.rvkernelmanager.utils.kernel
+package com.rve.rvkernelmanager.utils
 
-import com.rve.rvkernelmanager.utils.Log
-import com.rve.rvkernelmanager.utils.Utils
-import java.io.File
+import java.util.logging.Level
+import java.util.logging.Logger
 
-object UclampUtils {
+object Log {
+    private val logger = Logger.getLogger("RvKernelManager")
 
-    fun hasUclamp(): Boolean = File("/proc/sys/kernel/sched_util_clamp_min").exists()
-
-    fun getUclamp(target: String): Int = runCatching {
-        val file = File("/proc/sys/kernel/sched_util_clamp_$target")
-
-        if (file.exists()) {
-            file.readText().trim().toIntOrNull() ?: 0
-        } else {
-            0
-        }
-    }.getOrElse { e ->
-        Log.e("UclampUtils", "Failed to read uclamp param: $target", e)
-        0
+    fun d(tag: String, message: String) {
+        logger.log(Level.INFO, "[$tag] $message")
     }
 
-    fun setUclamp(target: String, value: Int): Boolean = runCatching {
-        val command = "echo $value | tee /proc/sys/kernel/sched_util_clamp_$target"
+    fun i(tag: String, message: String) {
+        logger.log(Level.INFO, "[$tag] $message")
+    }
 
-        Utils.exec(command)
-    }.getOrElse {
-        Log.e("UclampUtils", "Failed to set uclamp param: $target", it)
-        false
+    fun e(tag: String, message: String, throwable: Throwable? = null) {
+        logger.log(Level.SEVERE, "[$tag] $message", throwable)
     }
 }
