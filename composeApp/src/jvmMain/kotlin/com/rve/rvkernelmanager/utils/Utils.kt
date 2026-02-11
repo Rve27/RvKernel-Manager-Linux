@@ -75,7 +75,7 @@ object Utils {
                     ?.trim()
                     ?: "unknown"
             val coreCount = lines.count { it.startsWith("processor") }
-            "$model ($coreCount cores)"
+            "$model ($coreCount threads)"
         }
     }.getOrElse { e ->
         logger.log(Level.SEVERE, "Failed to read CPU info", e)
