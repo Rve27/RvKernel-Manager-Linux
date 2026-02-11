@@ -15,6 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Dear programmer:
+// When I wrote this code, only god and
+// I knew how it worked.
+// Now, only god knows it!
+//
+// Therefore, if you are trying to optimize
+// this routine and it fails (most surely),
+// please increase this counter as a
+// warning for the next person:
+//
+// total hours wasted here = 254
+//
 package com.rve.rvkernelmanager.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -52,7 +64,7 @@ class HomeViewModel : ViewModel() {
             isSwapActive = isSwapActive(),
             swap = getTotalSwap(),
             kernel = getKernelVersion(),
-            ram = getRamStatus()
+            ram = getRamStatus(),
         )
 
         emit(staticData)
@@ -61,7 +73,7 @@ class HomeViewModel : ViewModel() {
             delay(3000)
 
             val updatedData = staticData.copy(
-                ram = getRamStatus()
+                ram = getRamStatus(),
             )
 
             emit(updatedData)
@@ -71,6 +83,6 @@ class HomeViewModel : ViewModel() {
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = DeviceInfo()
+            initialValue = DeviceInfo(),
         )
 }

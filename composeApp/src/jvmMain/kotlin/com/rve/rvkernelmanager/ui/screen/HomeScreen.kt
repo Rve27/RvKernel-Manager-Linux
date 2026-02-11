@@ -80,9 +80,7 @@ import rvkernel_manager_linux.composeapp.generated.resources.manjaro_logo
 import rvkernel_manager_linux.composeapp.generated.resources.ubuntu_logo
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = viewModel { HomeViewModel() }
-) {
+fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
     val deviceInfo by viewModel.deviceInfo.collectAsStateWithLifecycle()
 
     Scaffold { innerPadding ->
@@ -120,7 +118,7 @@ fun HomeScreen(
                 containerIconShape = MaterialShapes.Circle.toShape(),
                 title = "Kernel",
                 summary = deviceInfo.kernel,
-            )
+            ),
         )
 
         val hardwareInfoItems = listOf(
@@ -156,14 +154,14 @@ fun HomeScreen(
                 contentPadding = PaddingValues(24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
                         text = "System Information",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp),
                     )
                 }
 
@@ -181,7 +179,7 @@ fun HomeScreen(
                         text = "Hardware Resources",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
                     )
                 }
 
@@ -200,7 +198,7 @@ fun HomeScreen(
                             text = "Virtual Memory",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
                         )
                     }
                 }
@@ -210,15 +208,15 @@ fun HomeScreen(
                         AnimatedVisibility(
                             visible = true,
                             enter = fadeIn(
-                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
                             ) + expandIn(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                             ),
                             exit = shrinkOut(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                             ) + fadeOut(
-                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-                            )
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                            ),
                         ) {
                             ItemCard(
                                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
@@ -235,15 +233,15 @@ fun HomeScreen(
                         AnimatedVisibility(
                             visible = true,
                             enter = fadeIn(
-                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
                             ) + expandIn(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                             ),
                             exit = shrinkOut(
-                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
                             ) + fadeOut(
-                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
-                            )
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                            ),
                         ) {
                             ItemCard(
                                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
