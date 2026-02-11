@@ -42,13 +42,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -91,7 +94,7 @@ fun HomeScreen() {
             else -> AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux))
         }
 
-        val deviceInfoItems = listOf(
+        val systemInfoItems = listOf(
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Person),
                 containerIconShape = MaterialShapes.Ghostish.toShape(),
@@ -107,9 +110,18 @@ fun HomeScreen() {
             HomeItem(
                 icon = osIcons,
                 containerIconShape = MaterialShapes.Cookie7Sided.toShape(),
-                title = "Operating system",
+                title = "OS",
                 summary = deviceInfo.os,
             ),
+            HomeItem(
+                icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
+                containerIconShape = MaterialShapes.Circle.toShape(),
+                title = "Kernel",
+                summary = deviceInfo.kernel,
+            )
+        )
+
+        val hardwareInfoItems = listOf(
             HomeItem(
                 icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
                 containerIconShape = MaterialShapes.Square.toShape(),
@@ -137,11 +149,23 @@ fun HomeScreen() {
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainer),
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 340.dp),
+                contentPadding = PaddingValues(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                items(deviceInfoItems) { item ->
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(
+                        text = "System Information",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 8.dp, start = 8.dp)
+                    )
+                }
+
+                items(systemInfoItems) { item ->
                     ItemCard(
                         icon = item.icon,
                         containerIconShape = item.containerIconShape,
@@ -149,57 +173,84 @@ fun HomeScreen() {
                         summary = item.summary,
                     )
                 }
-                item {
-                    AnimatedVisibility(
-                        visible = deviceInfo.isZramActive,
-                        enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                        ) + expandIn(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                        ),
-                        exit = shrinkOut(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                        ) + fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                        ),
-                    ) {
-                        ItemCard(
-                            icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
-                            containerIconShape = MaterialShapes.Square.toShape(),
-                            title = "ZRAM",
-                            summary = deviceInfo.zram,
-                        )
-                    }
-                }
-                item {
-                    AnimatedVisibility(
-                        visible = deviceInfo.isSwapActive,
-                        enter = fadeIn(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                        ) + expandIn(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                        ),
-                        exit = shrinkOut(
-                            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-                        ) + fadeOut(
-                            animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-                        ),
-                    ) {
-                        ItemCard(
-                            icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
-                            containerIconShape = MaterialShapes.Square.toShape(),
-                            title = "Total swap memory",
-                            summary = deviceInfo.swap,
-                        )
-                    }
-                }
-                item {
-                    ItemCard(
-                        icon = AppIcon.PainterIcon(painterResource(Res.drawable.ic_linux)),
-                        containerIconShape = MaterialShapes.Circle.toShape(),
-                        title = "Kernel",
-                        summary = deviceInfo.kernel,
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(
+                        text = "Hardware Resources",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                     )
+                }
+
+                items(hardwareInfoItems) { item ->
+                    ItemCard(
+                        icon = item.icon,
+                        containerIconShape = item.containerIconShape,
+                        title = item.title,
+                        summary = item.summary,
+                    )
+                }
+
+                if (deviceInfo.isZramActive || deviceInfo.isSwapActive) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            text = "Virtual Memory",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
+                        )
+                    }
+                }
+
+                if (deviceInfo.isZramActive) {
+                    item {
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn(
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            ) + expandIn(
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            ),
+                            exit = shrinkOut(
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            ) + fadeOut(
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            )
+                        ) {
+                            ItemCard(
+                                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                                containerIconShape = MaterialShapes.Square.toShape(),
+                                title = "ZRAM",
+                                summary = deviceInfo.zram,
+                            )
+                        }
+                    }
+                }
+
+                if (deviceInfo.isSwapActive) {
+                    item {
+                        AnimatedVisibility(
+                            visible = true,
+                            enter = fadeIn(
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            ) + expandIn(
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            ),
+                            exit = shrinkOut(
+                                animationSpec = MaterialTheme.motionScheme.slowSpatialSpec()
+                            ) + fadeOut(
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec()
+                            )
+                        ) {
+                            ItemCard(
+                                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
+                                containerIconShape = MaterialShapes.Square.toShape(),
+                                title = "Total Swap",
+                                summary = deviceInfo.swap,
+                            )
+                        }
+                    }
                 }
             }
         }
