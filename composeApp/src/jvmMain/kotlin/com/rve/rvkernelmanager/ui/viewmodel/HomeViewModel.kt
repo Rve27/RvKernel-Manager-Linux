@@ -15,18 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Dear programmer:
-// When I wrote this code, only god and
-// I knew how it worked.
-// Now, only god knows it!
-//
-// Therefore, if you are trying to optimize
-// this routine and it fails (most surely),
-// please increase this counter as a
-// warning for the next person:
-//
-// total hours wasted here = 254
-//
 package com.rve.rvkernelmanager.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -37,41 +25,52 @@ import com.rve.rvkernelmanager.utils.Utils.getGpuModel
 import com.rve.rvkernelmanager.utils.Utils.getHostname
 import com.rve.rvkernelmanager.utils.Utils.getKernelVersion
 import com.rve.rvkernelmanager.utils.Utils.getOS
-import com.rve.rvkernelmanager.utils.Utils.getTotalRam
+import com.rve.rvkernelmanager.utils.Utils.getRamStatus
 import com.rve.rvkernelmanager.utils.Utils.getTotalSwap
 import com.rve.rvkernelmanager.utils.Utils.getTotalZram
 import com.rve.rvkernelmanager.utils.Utils.getUsername
 import com.rve.rvkernelmanager.utils.Utils.isSwapActive
 import com.rve.rvkernelmanager.utils.Utils.isZramActive
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel : ViewModel() {
-    private val _deviceInfo = MutableStateFlow(DeviceInfo())
-    val deviceInfo: StateFlow<DeviceInfo> = _deviceInfo
+    val deviceInfo: StateFlow<DeviceInfo> = flow {
+        val staticData = DeviceInfo(
+            user = getUsername(),
+            hostname = getHostname(),
+            os = getOS(),
+            cpu = getCpuModel(),
+            gpu = getGpuModel(),
+            isZramActive = isZramActive(),
+            zram = getTotalZram(),
+            isSwapActive = isSwapActive(),
+            swap = getTotalSwap(),
+            kernel = getKernelVersion(),
+            ram = getRamStatus()
+        )
 
-    init {
-        getDeviceInfo()
-    }
+        emit(staticData)
 
-    fun getDeviceInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _deviceInfo.value =
-                DeviceInfo(
-                    user = getUsername(),
-                    hostname = getHostname(),
-                    os = getOS(),
-                    cpu = getCpuModel(),
-                    gpu = getGpuModel(),
-                    ram = getTotalRam(),
-                    isZramActive = isZramActive(),
-                    zram = getTotalZram(),
-                    isSwapActive = isSwapActive(),
-                    swap = getTotalSwap(),
-                    kernel = getKernelVersion(),
-                )
+        while (true) {
+            delay(3000)
+
+            val updatedData = staticData.copy(
+                ram = getRamStatus()
+            )
+
+            emit(updatedData)
         }
     }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = DeviceInfo()
+        )
 }

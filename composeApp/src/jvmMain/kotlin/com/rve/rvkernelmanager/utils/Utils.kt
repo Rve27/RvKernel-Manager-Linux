@@ -102,21 +102,30 @@ object Utils {
         "unknown"
     }
 
-    fun getTotalRam(): String = runCatching {
-        File("/proc/meminfo").useLines { lines ->
-            val memTotalLine = lines.find { it.startsWith("MemTotal:") }
-            val kbValue = memTotalLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+    fun getRamStatus(): String = runCatching {
+        File("/proc/meminfo").useLines { seq ->
+            val lines = seq.toList()
 
-            if (kbValue > 0) {
-                val gbValue = kbValue / (1024.0 * 1024.0)
-                val df = DecimalFormat("#.#")
-                "${df.format(gbValue)} GB"
+            val totalLine = lines.find { it.startsWith("MemTotal:") }
+            val availableLine = lines.find { it.startsWith("MemAvailable:") }
+
+            val totalKb = totalLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+            val availableKb = availableLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+
+            if (totalKb > 0) {
+                val usedKb = totalKb - availableKb
+
+                val df = DecimalFormat("#.##") // Menggunakan 2 desimal agar lebih presisi
+                fun toGb(kb: Long): String = df.format(kb / (1024.0 * 1024.0))
+
+                // Menggunakan format multi-line agar tampilannya berurutan ke bawah
+                "Total: ${toGb(totalKb)} GB\nUsed: ${toGb(usedKb)} GB\nFree: ${toGb(availableKb)} GB"
             } else {
                 "unknown"
             }
         }
     }.getOrElse { e ->
-        logger.log(Level.WARNING, "Failed to get RAM info", e)
+        logger.log(Level.WARNING, "Failed to get RAM status", e)
         "unknown"
     }
 
