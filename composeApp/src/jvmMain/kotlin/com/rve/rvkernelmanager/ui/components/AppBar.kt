@@ -43,8 +43,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,36 +72,58 @@ object AppBar {
                 )
             },
             actions = {
-                IconButton(onClick = openColorPicker) {
-                    Image(
-                        imageVector = MaterialSymbols.RoundedFilled.Palette,
-                        contentDescription = "Change Color Scheme",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                    )
-                }
-                IconButton(onClick = onThemeChange) {
-                    val slideAnimationSpec = MaterialTheme.motionScheme.slowSpatialSpec<IntOffset>()
-                    val fadeAnimationSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()
-
-                    AnimatedContent(
-                        targetState = isDarkTheme,
-                        transitionSpec = {
-                            if (targetState) {
-                                (slideInVertically(slideAnimationSpec) { height -> -height } + fadeIn(fadeAnimationSpec)) togetherWith
-                                    (slideOutVertically(slideAnimationSpec) { height -> height } + fadeOut(fadeAnimationSpec))
-                            } else {
-                                (slideInVertically(slideAnimationSpec) { height -> height } + fadeIn(fadeAnimationSpec)) togetherWith
-                                    (slideOutVertically(slideAnimationSpec) { height -> -height } + fadeOut(fadeAnimationSpec))
-                            }.using(
-                                SizeTransform(clip = false),
-                            )
-                        },
-                    ) { isDark ->
+                TooltipBox(
+                    positionProvider =
+                        TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Left),
+                    tooltip = {
+                        PlainTooltip(caretShape = TooltipDefaults.caretShape()) { Text("Change theme color") }
+                    },
+                    state = rememberTooltipState(),
+                ) {
+                    IconButton(onClick = openColorPicker) {
                         Image(
-                            imageVector = if (isDark) MaterialSymbols.RoundedFilled.Light_mode else MaterialSymbols.RoundedFilled.Dark_mode,
-                            contentDescription = if (isDark) "Switch to light mode" else "Switch to dark mode",
+                            imageVector = MaterialSymbols.RoundedFilled.Palette,
+                            contentDescription = "Change Color Scheme",
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                         )
+                    }
+                }
+                TooltipBox(
+                    positionProvider =
+                        TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Left),
+                    tooltip = {
+                        PlainTooltip(
+                            caretShape = TooltipDefaults.caretShape()
+                        ) {
+                            Text(if (isDarkTheme) "Switch to light mode" else "Switch to dark mode")
+                        }
+                    },
+                    state = rememberTooltipState(),
+                ) {
+                    IconButton(onClick = onThemeChange) {
+                        val slideAnimationSpec = MaterialTheme.motionScheme.slowSpatialSpec<IntOffset>()
+                        val fadeAnimationSpec = MaterialTheme.motionScheme.slowEffectsSpec<Float>()
+
+                        AnimatedContent(
+                            targetState = isDarkTheme,
+                            transitionSpec = {
+                                if (targetState) {
+                                    (slideInVertically(slideAnimationSpec) { height -> -height } + fadeIn(fadeAnimationSpec)) togetherWith
+                                            (slideOutVertically(slideAnimationSpec) { height -> height } + fadeOut(fadeAnimationSpec))
+                                } else {
+                                    (slideInVertically(slideAnimationSpec) { height -> height } + fadeIn(fadeAnimationSpec)) togetherWith
+                                            (slideOutVertically(slideAnimationSpec) { height -> -height } + fadeOut(fadeAnimationSpec))
+                                }.using(
+                                    SizeTransform(clip = false),
+                                )
+                            },
+                        ) { isDark ->
+                            Image(
+                                imageVector = if (isDark) MaterialSymbols.RoundedFilled.Light_mode else MaterialSymbols.RoundedFilled.Dark_mode,
+                                contentDescription = if (isDark) "Switch to light mode" else "Switch to dark mode",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                            )
+                        }
                     }
                 }
             },
