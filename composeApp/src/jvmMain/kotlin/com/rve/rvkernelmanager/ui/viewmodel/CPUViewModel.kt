@@ -44,51 +44,50 @@ import com.rve.rvkernelmanager.utils.cpu.CPUUtils.setCpuGov
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class CPUViewModel : ViewModel() {
     private val _cpuData = MutableStateFlow(CPUData())
-    val cpuData: StateFlow<CPUData> = _cpuData
+    val cpuData: StateFlow<CPUData> = flow {
+        val staticData = CPUData(
+            curFreq = getCpuFreq("cur"),
+            minFreq = getCpuFreq("min"),
+            maxFreq = getCpuFreq("max"),
+            governor = getCpuGovernor(),
+            hasBoost = hasCpuBoost(),
+            isBoostEnabled = isCpuBoostEnabled(),
+        )
+
+        emit(staticData)
+
+        while (true) {
+            delay(1000)
+
+            val updatedData = staticData.copy(
+                curFreq = getCpuFreq("cur")
+            )
+
+            emit(updatedData)
+        }
+    }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(0),
+            initialValue = CPUData(),
+        )
 
     private val _availableFreqs = MutableStateFlow<List<Long>>(emptyList())
     val availableFreqs: StateFlow<List<Long>> = _availableFreqs
 
     private val _availableGovernors = MutableStateFlow<List<String>>(emptyList())
     val availableGovernors: StateFlow<List<String>> = _availableGovernors
-
-    init {
-        getCpuData()
-        updateCurFreq()
-    }
-
-    fun getCpuData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _cpuData.value =
-                CPUData(
-                    curFreq = getCpuFreq("cur"),
-                    minFreq = getCpuFreq("min"),
-                    maxFreq = getCpuFreq("max"),
-                    governor = getCpuGovernor(),
-                    hasBoost = hasCpuBoost(),
-                    isBoostEnabled = isCpuBoostEnabled(),
-                )
-        }
-    }
-
-    fun updateCurFreq() {
-        viewModelScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                delay(3000)
-                val currentFreq = getCpuFreq("cur")
-                _cpuData.update { currentState ->
-                    currentState.copy(curFreq = currentFreq)
-                }
-            }
-        }
-    }
 
     fun getAvailableFreqs() {
         viewModelScope.launch(Dispatchers.IO) {
