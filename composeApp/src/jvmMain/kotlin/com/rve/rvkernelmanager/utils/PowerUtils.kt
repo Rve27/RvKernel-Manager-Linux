@@ -34,7 +34,7 @@ import java.io.IOException
 object PowerUtils {
     private fun runCommand(command: String) {
         try {
-            Runtime.getRuntime().exec(arrayOf("/bin/sh", "-c", command))
+            Runtime.getRuntime().exec(arrayOf("bash", "-c", command))
         } catch (e: IOException) {
             e.printStackTrace()
         }
