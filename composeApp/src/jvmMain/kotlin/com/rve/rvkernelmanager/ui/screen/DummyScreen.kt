@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -54,7 +55,11 @@ fun DummyScreen() {
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             contentAlignment = Alignment.Center,
         ) {
-            Text("Dummy Screen")
+            Text(
+                text = "Dummy Screen",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayMedium
+            )
         }
     }
 }
