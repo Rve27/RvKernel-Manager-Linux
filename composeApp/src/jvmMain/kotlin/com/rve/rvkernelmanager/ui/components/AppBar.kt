@@ -68,7 +68,7 @@ object AppBar {
             title = {
                 Text(
                     text = "RvKernel Manager Linux",
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
