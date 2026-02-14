@@ -42,6 +42,7 @@ import com.rve.rvkernelmanager.utils.cpu.CPUUtils.setCpuBoost
 import com.rve.rvkernelmanager.utils.cpu.CPUUtils.setCpuFreq
 import com.rve.rvkernelmanager.utils.cpu.CPUUtils.setCpuGov
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,9 +60,10 @@ class CPUViewModel : ViewModel() {
     private val _availableGovernors = MutableStateFlow<List<String>>(emptyList())
     val availableGovernors: StateFlow<List<String>> = _availableGovernors
 
+    private var cpuJob: Job? = null
+
     init {
         getCpuData()
-        updateCurFreq()
     }
 
     fun getCpuData() {
@@ -79,9 +81,11 @@ class CPUViewModel : ViewModel() {
     }
 
     fun updateCurFreq() {
-        viewModelScope.launch(Dispatchers.IO) {
+        cpuJob?.cancel()
+
+        cpuJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
-                delay(3000)
+                delay(1000)
                 val currentFreq = getCpuFreq("cur")
                 _cpuData.update { currentState ->
                     currentState.copy(curFreq = currentFreq)
@@ -139,5 +143,10 @@ class CPUViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun stopCpuJob() {
+        cpuJob?.cancel()
+        cpuJob = null
     }
 }

@@ -75,6 +75,7 @@ import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -110,6 +111,13 @@ fun CPUScreen(viewModel: CPUViewModel = viewModel { CPUViewModel() }) {
     var showAvailableGovernorsDialog by remember { mutableStateOf(false) }
     var availableFreqsDialogTitle by remember { mutableStateOf("") }
     var isMaxFreq by remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        viewModel.updateCurFreq()
+        onDispose {
+            viewModel.stopCpuJob()
+        }
+    }
 
     Scaffold { innerPadding ->
         Box(
