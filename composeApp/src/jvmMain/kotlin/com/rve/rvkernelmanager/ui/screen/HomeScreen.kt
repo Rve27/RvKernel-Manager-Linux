@@ -57,6 +57,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -159,6 +160,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
                         text = "System Information",
+                        fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 8.dp, start = 8.dp),
@@ -177,6 +179,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
                         text = "Hardware Resources",
+                        fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
@@ -196,6 +199,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             text = "Virtual Memory",
+                            fontWeight = FontWeight.Medium,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
