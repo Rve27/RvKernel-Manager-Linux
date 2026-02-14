@@ -90,6 +90,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.roundedfilled.Bolt
 import com.composables.icons.materialsymbols.roundedfilled.Check
@@ -100,8 +101,7 @@ import com.composables.icons.materialsymbols.roundedfilled.Speed
 import com.rve.rvkernelmanager.ui.viewmodel.CPUViewModel
 
 @Composable
-fun CPUScreen() {
-    val viewModel = CPUViewModel()
+fun CPUScreen(viewModel: CPUViewModel = viewModel { CPUViewModel() }) {
     val cpuData by viewModel.cpuData.collectAsStateWithLifecycle()
     val availableFreqs by viewModel.availableFreqs.collectAsStateWithLifecycle()
     val availableGovernors by viewModel.availableGovernors.collectAsStateWithLifecycle()
