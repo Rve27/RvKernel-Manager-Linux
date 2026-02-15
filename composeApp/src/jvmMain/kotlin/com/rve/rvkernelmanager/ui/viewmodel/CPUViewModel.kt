@@ -75,7 +75,7 @@ class CPUViewModel : ViewModel() {
     private fun loadBootSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             val settings = SettingsManager.loadSettings()
-            _turboOnBoot.value = settings.applyTurboOnBoot
+            _turboOnBoot.value = settings.applyCpuTurboOnBoot
         }
     }
 
