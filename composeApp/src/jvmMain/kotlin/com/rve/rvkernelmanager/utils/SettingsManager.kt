@@ -32,26 +32,35 @@ package com.rve.rvkernelmanager.utils
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import java.io.File
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
-@Serializable
 data class AppSettings(val seedColorArgb: Int = 0xFFEBAC00.toInt())
 
 object SettingsManager {
     private val configDir = File(System.getProperty("user.home"), ".config/rvkernel-manager")
-    private val configFile = File(configDir, "settings.json")
-
-    private val json =
-        Json {
-            ignoreUnknownKeys = true
-            prettyPrint = true
-        }
+    private val configFile = File(configDir, "rvkernel-manager.conf")
 
     fun loadSettings(): AppSettings = try {
         if (configFile.exists()) {
             val content = configFile.readText()
-            json.decodeFromString<AppSettings>(content)
+
+            val hexColorString = content.lines()
+                .find { it.trim().startsWith("colorScheme") }
+                ?.substringAfter("=")
+                ?.trim()
+                ?.removeSurrounding("\"")
+
+            if (hexColorString != null) {
+                try {
+                    val cleanHex = hexColorString.removePrefix("#")
+                    val colorInt = cleanHex.toLong(16).toInt()
+                    AppSettings(seedColorArgb = colorInt)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    AppSettings()
+                }
+            } else {
+                AppSettings()
+            }
         } else {
             AppSettings()
         }
@@ -65,10 +74,12 @@ object SettingsManager {
             if (!configDir.exists()) {
                 configDir.mkdirs()
             }
-            val currentSettings = loadSettings()
-            val newSettings = currentSettings.copy(seedColorArgb = color.toArgb())
 
-            configFile.writeText(json.encodeToString(AppSettings.serializer(), newSettings))
+            val hexString = "#${"%08X".format(color.toArgb())}"
+
+            val configContent = "colorScheme = \"$hexString\"\n"
+
+            configFile.writeText(configContent)
         } catch (e: Exception) {
             e.printStackTrace()
         }
