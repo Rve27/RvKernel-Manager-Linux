@@ -62,6 +62,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialShapes
@@ -83,6 +85,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
@@ -104,6 +107,7 @@ import com.rve.rvkernelmanager.ui.viewmodel.CPUViewModel
 @Composable
 fun CPUScreen(viewModel: CPUViewModel = viewModel { CPUViewModel() }) {
     val cpuData by viewModel.cpuData.collectAsStateWithLifecycle()
+    val turboOnBoot by viewModel.turboOnBoot.collectAsStateWithLifecycle()
     val availableFreqs by viewModel.availableFreqs.collectAsStateWithLifecycle()
     val availableGovernors by viewModel.availableGovernors.collectAsStateWithLifecycle()
 
@@ -255,6 +259,9 @@ fun CPUScreen(viewModel: CPUViewModel = viewModel { CPUViewModel() }) {
                                 title = "CPU Boost / Turbo",
                                 checked = cpuData.isBoostEnabled,
                                 onCheckedChange = { viewModel.toggleCpuBoost(it) },
+                                showBootOption = true,
+                                isBootChecked = turboOnBoot,
+                                onBootCheckedChange = { viewModel.toggleTurboOnBoot(it) }
                             )
                         }
                     }
@@ -427,7 +434,14 @@ fun CpuStatCard(title: String, value: String, icon: ImageVector, onClick: () -> 
 }
 
 @Composable
-fun CpuToggleCard(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun CpuToggleCard(
+    title: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    showBootOption: Boolean = false,
+    isBootChecked: Boolean = false,
+    onBootCheckedChange: ((Boolean) -> Unit)? = null
+) {
     val interactionSource = remember { MutableInteractionSource() }
 
     val animatedContainerColor by animateColorAsState(
@@ -448,6 +462,8 @@ fun CpuToggleCard(title: String, checked: Boolean, onCheckedChange: (Boolean) ->
         label = "Icon Color",
     )
 
+    val cardHeight = if (showBootOption) 180.dp else 140.dp
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = animatedContainerColor,
@@ -455,7 +471,7 @@ fun CpuToggleCard(title: String, checked: Boolean, onCheckedChange: (Boolean) ->
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         interactionSource = interactionSource,
         onClick = { onCheckedChange(!checked) },
-        modifier = Modifier.height(140.dp),
+        modifier = Modifier.height(cardHeight),
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -511,12 +527,39 @@ fun CpuToggleCard(title: String, checked: Boolean, onCheckedChange: (Boolean) ->
                 )
             }
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = animatedContentColor,
-            )
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = animatedContentColor,
+                )
+
+                if (showBootOption && onBootCheckedChange != null) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .background(Color.Transparent)
+                    ) {
+                        Checkbox(
+                            checked = isBootChecked,
+                            onCheckedChange = onBootCheckedChange,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = animatedContentColor,
+                                uncheckedColor = animatedContentColor.copy(alpha = 0.6f),
+                                checkmarkColor = animatedContainerColor
+                            ),
+                            modifier = Modifier.size(32.dp).padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "Set on boot",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = animatedContentColor.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
         }
     }
 }

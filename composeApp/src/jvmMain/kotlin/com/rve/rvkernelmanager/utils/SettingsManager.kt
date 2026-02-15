@@ -33,7 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import java.io.File
 
-data class AppSettings(val seedColorArgb: Int = 0xFFEBAC00.toInt())
+data class AppSettings(
+    val seedColorArgb: Int = 0xFFEBAC00.toInt(),
+    val applyTurboOnBoot: Boolean = false
+)
 
 object SettingsManager {
     private val configDir = File(System.getProperty("user.home"), ".config/rvkernel-manager")
@@ -42,25 +45,27 @@ object SettingsManager {
     fun loadSettings(): AppSettings = try {
         if (configFile.exists()) {
             val content = configFile.readText()
+            val lines = content.lines()
 
-            val hexColorString = content.lines()
-                .find { it.trim().startsWith("colorScheme") }
+            fun getValue(key: String): String? = lines
+                .find { it.trim().startsWith(key) }
                 ?.substringAfter("=")
                 ?.trim()
                 ?.removeSurrounding("\"")
+                ?.removeSurrounding("'")
 
-            if (hexColorString != null) {
+            val hexColorString = getValue("colorScheme")
+            val applyTurbo = getValue("applyTurboOnBoot")?.toBoolean() ?: false
+
+            val colorInt = if (!hexColorString.isNullOrEmpty()) {
                 try {
-                    val cleanHex = hexColorString.removePrefix("#")
-                    val colorInt = cleanHex.toLong(16).toInt()
-                    AppSettings(seedColorArgb = colorInt)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    AppSettings()
-                }
+                    hexColorString.removePrefix("#").toLong(16).toInt()
+                } catch (e: Exception) { 0xFFEBAC00.toInt() }
             } else {
-                AppSettings()
+                0xFFEBAC00.toInt()
             }
+
+            AppSettings(colorInt, applyTurbo)
         } else {
             AppSettings()
         }
@@ -69,19 +74,28 @@ object SettingsManager {
         AppSettings()
     }
 
-    fun saveColor(color: Color) {
+    private fun saveConfig(settings: AppSettings) {
         try {
-            if (!configDir.exists()) {
-                configDir.mkdirs()
+            if (!configDir.exists()) configDir.mkdirs()
+            val hexString = "#${"%08X".format(settings.seedColorArgb)}"
+
+            val content = buildString {
+                appendLine("colorScheme = \"$hexString\"")
+                appendLine("applyTurboOnBoot = ${settings.applyTurboOnBoot}")
             }
-
-            val hexString = "#${"%08X".format(color.toArgb())}"
-
-            val configContent = "colorScheme = \"$hexString\"\n"
-
-            configFile.writeText(configContent)
+            configFile.writeText(content)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun saveColor(color: Color) {
+        val current = loadSettings()
+        saveConfig(current.copy(seedColorArgb = color.toArgb()))
+    }
+
+    fun saveTurboBootSetting(applyOnBoot: Boolean) {
+        val current = loadSettings()
+        saveConfig(current.copy(applyTurboOnBoot = applyOnBoot))
     }
 }

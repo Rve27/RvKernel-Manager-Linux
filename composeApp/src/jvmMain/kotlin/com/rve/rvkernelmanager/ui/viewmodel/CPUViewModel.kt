@@ -32,6 +32,8 @@ package com.rve.rvkernelmanager.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.cpu.CPUData
+import com.rve.rvkernelmanager.utils.BootServiceManager
+import com.rve.rvkernelmanager.utils.SettingsManager
 import com.rve.rvkernelmanager.utils.cpu.CPUUtils.getAvailableCpuFreqs
 import com.rve.rvkernelmanager.utils.cpu.CPUUtils.getAvailableCpuGovernor
 import com.rve.rvkernelmanager.utils.cpu.CPUUtils.getCpuFreq
@@ -60,10 +62,21 @@ class CPUViewModel : ViewModel() {
     private val _availableGovernors = MutableStateFlow<List<String>>(emptyList())
     val availableGovernors: StateFlow<List<String>> = _availableGovernors
 
+    private val _turboOnBoot = MutableStateFlow(false)
+    val turboOnBoot: StateFlow<Boolean> = _turboOnBoot
+
     private var cpuJob: Job? = null
 
     init {
         getCpuData()
+        loadBootSettings()
+    }
+
+    private fun loadBootSettings() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val settings = SettingsManager.loadSettings()
+            _turboOnBoot.value = settings.applyTurboOnBoot
+        }
     }
 
     fun getCpuData() {
@@ -82,7 +95,6 @@ class CPUViewModel : ViewModel() {
 
     fun updateCurFreq() {
         cpuJob?.cancel()
-
         cpuJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 delay(1000)
@@ -136,12 +148,35 @@ class CPUViewModel : ViewModel() {
 
     fun toggleCpuBoost(enable: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            val success = setCpuBoost(enable)
-            if (success) {
-                _cpuData.update { currentState ->
-                    currentState.copy(isBoostEnabled = enable)
-                }
+            _cpuData.update { currentState ->
+                currentState.copy(isBoostEnabled = enable)
             }
+
+            val success = if (_turboOnBoot.value) {
+                BootServiceManager.updateBootService(enableService = true, turboEnabled = enable)
+            } else {
+                setCpuBoost(enable)
+            }
+
+            if (!success) {
+                _cpuData.update { currentState ->
+                    currentState.copy(isBoostEnabled = !enable) // Balikkan nilai
+                }
+                getCpuData()
+            }
+        }
+    }
+
+    fun toggleTurboOnBoot(enable: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _turboOnBoot.value = enable
+            SettingsManager.saveTurboBootSetting(applyOnBoot = enable)
+
+            val currentTurboState = _cpuData.value.isBoostEnabled
+            BootServiceManager.updateBootService(
+                enableService = enable,
+                turboEnabled = currentTurboState
+            )
         }
     }
 
