@@ -44,7 +44,7 @@ object SettingsManager {
             val content = configFile.readText()
 
             val hexColorString = content.lines()
-                .find { it.trim().startsWith("colorScheme") }
+                .find { it.trim().startsWith("color_scheme") }
                 ?.substringAfter("=")
                 ?.trim()
                 ?.removeSurrounding("\"")
@@ -77,7 +77,7 @@ object SettingsManager {
 
             val hexString = "#${"%08X".format(color.toArgb())}"
 
-            val configContent = "colorScheme = \"$hexString\"\n"
+            val configContent = "color_scheme = \"$hexString\"\n"
 
             configFile.writeText(configContent)
         } catch (e: Exception) {
