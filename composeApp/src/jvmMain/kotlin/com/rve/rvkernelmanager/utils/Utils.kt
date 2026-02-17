@@ -198,15 +198,7 @@ object Utils {
     }
 
     fun exec(command: String): Boolean = try {
-        val process =
-            ProcessBuilder(
-                "pkexec",
-                "sh",
-                "-c",
-                command,
-            ).start()
-        val exitCode = process.waitFor()
-        exitCode == 0
+        RootSession.exec(command)
     } catch (e: Exception) {
         Log.e("Utils", "Execution failed: $command", e)
         false

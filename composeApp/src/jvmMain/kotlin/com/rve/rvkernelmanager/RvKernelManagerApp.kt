@@ -38,14 +38,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButtonMenu
@@ -73,6 +76,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -103,6 +107,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -129,7 +134,11 @@ import com.rve.rvkernelmanager.utils.PowerUtils.reboot
 import com.rve.rvkernelmanager.utils.PowerUtils.rebootToFirmware
 import com.rve.rvkernelmanager.utils.PowerUtils.shutdown
 import com.rve.rvkernelmanager.utils.PowerUtils.sleep
+import com.rve.rvkernelmanager.utils.RootSession
 import com.rve.rvkernelmanager.utils.SettingsManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun RvKernelManagerApp() {
@@ -146,6 +155,8 @@ fun RvKernelManagerApp() {
     val focusRequester = remember { FocusRequester() }
     var fabMenuExpanded by rememberSaveable { mutableStateOf(false) }
 
+    var isAuthenticated by remember { mutableStateOf(false) }
+
     val fabItems = listOf(
         MaterialSymbols.RoundedFilled.Power_settings_new to "Shutdown",
         MaterialSymbols.RoundedFilled.Restart_alt to "Reboot",
@@ -157,143 +168,247 @@ fun RvKernelManagerApp() {
         seedColor = seedColor,
         isDark = isDarkTheme,
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Scaffold(
-                topBar = {
-                    SimpleTopAppBar(
-                        isDarkTheme = isDarkTheme,
-                        onThemeChange = { isDarkTheme = !isDarkTheme },
-                        openColorPicker = { showColorPicker = true },
-                    )
-                },
-            ) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = Home,
-                    modifier = Modifier.padding(innerPadding),
-                ) {
-                    composable<Home> {
-                        HomeScreen()
-                    }
-                    composable<CPU> {
-                        CPUScreen()
-                    }
-                    composable<Kernel> {
-                        KernelScreen()
-                    }
-                }
-            }
-
-            BottomNavigationBar(
-                navController = navController,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+        if (!isAuthenticated) {
+            PasswordDialog(
+                onAuthenticated = { isAuthenticated = true },
             )
-
-            FloatingActionButtonMenu(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
-                expanded = fabMenuExpanded,
-                button = {
-                    TooltipBox(
-                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                            if (fabMenuExpanded) TooltipAnchorPosition.Start else TooltipAnchorPosition.Above,
-                        ),
-                        tooltip = { PlainTooltip { Text("Power Menu") } },
-                        state = rememberTooltipState(),
+        } else {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Scaffold(
+                    topBar = {
+                        SimpleTopAppBar(
+                            isDarkTheme = isDarkTheme,
+                            onThemeChange = { isDarkTheme = !isDarkTheme },
+                            openColorPicker = { showColorPicker = true },
+                        )
+                    },
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = Home,
+                        modifier = Modifier.padding(innerPadding),
                     ) {
-                        ToggleFloatingActionButton(
-                            modifier = Modifier
-                                .semantics {
-                                    traversalIndex = -1f
-                                    stateDescription = if (fabMenuExpanded) "Expanded" else "Collapsed"
-                                    contentDescription = "Toggle power menu"
-                                }
-                                .animateFloatingActionButton(
-                                    visible = true,
-                                    alignment = Alignment.BottomEnd,
-                                )
-                                .focusRequester(focusRequester),
-                            checked = fabMenuExpanded,
-                            onCheckedChange = { fabMenuExpanded = !fabMenuExpanded },
-                        ) {
-                            val imageVector by remember {
-                                derivedStateOf {
-                                    if (checkedProgress >
-                                        0.5f
-                                    ) MaterialSymbols.RoundedFilled.Close else MaterialSymbols.RoundedFilled.Power_settings_new
-                                }
-                            }
-                            Icon(
-                                painter = rememberVectorPainter(imageVector),
-                                contentDescription = null,
-                                modifier = Modifier.animateIcon({ checkedProgress }),
-                            )
+                        composable<Home> {
+                            HomeScreen()
+                        }
+                        composable<CPU> {
+                            CPUScreen()
+                        }
+                        composable<Kernel> {
+                            KernelScreen()
                         }
                     }
-                },
-            ) {
-                fabItems.forEachIndexed { i, item ->
-                    FloatingActionButtonMenuItem(
-                        modifier = Modifier
-                            .semantics {
-                                isTraversalGroup = true
-                                if (i == fabItems.size - 1) {
-                                    customActions = listOf(
-                                        CustomAccessibilityAction(
-                                            label = "Close menu",
-                                            action = {
-                                                fabMenuExpanded = false
-                                                true
-                                            },
-                                        ),
-                                    )
-                                }
-                            }
-                            .then(
-                                if (i == 0) {
-                                    Modifier.onKeyEvent {
-                                        if (it.type == KeyEventType.KeyDown &&
-                                            (it.key == Key.DirectionUp || (it.isShiftPressed && it.key == Key.Tab))
-                                        ) {
-                                            focusRequester.requestFocus()
-                                            return@onKeyEvent true
-                                        }
-                                        return@onKeyEvent false
-                                    }
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                        onClick = {
-                            fabMenuExpanded = false
+                }
 
-                            when (item.second) {
-                                "Shutdown" -> shutdown()
-                                "Reboot" -> reboot()
-                                "Reboot to firmware settings" -> rebootToFirmware()
-                                "Sleep" -> sleep()
+                BottomNavigationBar(
+                    navController = navController,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                )
+
+                FloatingActionButtonMenu(
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
+                    expanded = fabMenuExpanded,
+                    button = {
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                                if (fabMenuExpanded) TooltipAnchorPosition.Start else TooltipAnchorPosition.Above,
+                            ),
+                            tooltip = { PlainTooltip { Text("Power Menu") } },
+                            state = rememberTooltipState(),
+                        ) {
+                            ToggleFloatingActionButton(
+                                modifier = Modifier
+                                    .semantics {
+                                        traversalIndex = -1f
+                                        stateDescription = if (fabMenuExpanded) "Expanded" else "Collapsed"
+                                        contentDescription = "Toggle power menu"
+                                    }
+                                    .animateFloatingActionButton(
+                                        visible = true,
+                                        alignment = Alignment.BottomEnd,
+                                    )
+                                    .focusRequester(focusRequester),
+                                checked = fabMenuExpanded,
+                                onCheckedChange = { fabMenuExpanded = !fabMenuExpanded },
+                            ) {
+                                val imageVector by remember {
+                                    derivedStateOf {
+                                        if (checkedProgress >
+                                            0.5f
+                                        ) MaterialSymbols.RoundedFilled.Close else MaterialSymbols.RoundedFilled.Power_settings_new
+                                    }
+                                }
+                                Icon(
+                                    painter = rememberVectorPainter(imageVector),
+                                    contentDescription = null,
+                                    modifier = Modifier.animateIcon({ checkedProgress }),
+                                )
                             }
+                        }
+                    },
+                ) {
+                    fabItems.forEachIndexed { i, item ->
+                        FloatingActionButtonMenuItem(
+                            modifier = Modifier
+                                .semantics {
+                                    isTraversalGroup = true
+                                    if (i == fabItems.size - 1) {
+                                        customActions = listOf(
+                                            CustomAccessibilityAction(
+                                                label = "Close menu",
+                                                action = {
+                                                    fabMenuExpanded = false
+                                                    true
+                                                },
+                                            ),
+                                        )
+                                    }
+                                }
+                                .then(
+                                    if (i == 0) {
+                                        Modifier.onKeyEvent {
+                                            if (it.type == KeyEventType.KeyDown &&
+                                                (it.key == Key.DirectionUp || (it.isShiftPressed && it.key == Key.Tab))
+                                            ) {
+                                                focusRequester.requestFocus()
+                                                return@onKeyEvent true
+                                            }
+                                            return@onKeyEvent false
+                                        }
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
+                            onClick = {
+                                fabMenuExpanded = false
+
+                                when (item.second) {
+                                    "Shutdown" -> shutdown()
+                                    "Reboot" -> reboot()
+                                    "Reboot to firmware settings" -> rebootToFirmware()
+                                    "Sleep" -> sleep()
+                                }
+                            },
+                            icon = { Icon(rememberVectorPainter(item.first), contentDescription = null) },
+                            text = { Text(text = item.second) },
+                        )
+                    }
+                }
+
+                if (showColorPicker) {
+                    ColorPickerDialog(
+                        color = seedColor,
+                        onDismiss = { showColorPicker = false },
+                        onColorSelected = { newColor ->
+                            seedColor = newColor
+                            SettingsManager.saveColor(newColor)
+                            showColorPicker = false
                         },
-                        icon = { Icon(rememberVectorPainter(item.first), contentDescription = null) },
-                        text = { Text(text = item.second) },
                     )
                 }
-            }
-
-            if (showColorPicker) {
-                ColorPickerDialog(
-                    color = seedColor,
-                    onDismiss = { showColorPicker = false },
-                    onColorSelected = { newColor ->
-                        seedColor = newColor
-                        SettingsManager.saveColor(newColor)
-                        showColorPicker = false
-                    },
-                )
             }
         }
     }
+}
+
+@Composable
+private fun PasswordDialog(onAuthenticated: () -> Unit) {
+    var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val passwordFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        passwordFocusRequester.requestFocus()
+    }
+
+    fun attemptLogin() {
+        if (password.isBlank() || isLoading) return
+        isLoading = true
+        errorMessage = null
+
+        scope.launch {
+            val success = withContext(Dispatchers.IO) {
+                RootSession.authenticate(password)
+            }
+            isLoading = false
+            if (success) {
+                onAuthenticated()
+            } else {
+                errorMessage = "Authentication failed. Wrong password?"
+                password = ""
+            }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = {},
+        title = {
+            Text(
+                text = "Root Authentication",
+                color = MaterialTheme.colorScheme.primary,
+            )
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    text = "This app requires root access to manage kernel parameters.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { attemptLogin() },
+                    ),
+                    singleLine = true,
+                    enabled = !isLoading,
+                    isError = errorMessage != null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(passwordFocusRequester),
+                )
+
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { attemptLogin() },
+                enabled = password.isNotBlank() && !isLoading,
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.height(16.dp).width(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text("Authenticate")
+            }
+        },
+    )
 }
 
 @Composable
