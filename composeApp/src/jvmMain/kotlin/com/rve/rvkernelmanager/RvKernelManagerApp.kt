@@ -150,7 +150,7 @@ fun RvKernelManagerApp() {
     var showColorPicker by remember { mutableStateOf(false) }
 
     val systemInDarkTheme = isSystemInDarkTheme()
-    var isDarkTheme by remember { mutableStateOf(systemInDarkTheme) }
+    var isDarkTheme by remember { mutableStateOf(loadSettings.isDark ?: systemInDarkTheme) }
 
     val focusRequester = remember { FocusRequester() }
     var fabMenuExpanded by rememberSaveable { mutableStateOf(false) }
@@ -178,7 +178,10 @@ fun RvKernelManagerApp() {
                     topBar = {
                         SimpleTopAppBar(
                             isDarkTheme = isDarkTheme,
-                            onThemeChange = { isDarkTheme = !isDarkTheme },
+                            onThemeChange = {
+                                isDarkTheme = !isDarkTheme
+                                SettingsManager.saveDarkMode(isDarkTheme)
+                            },
                             openColorPicker = { showColorPicker = true },
                         )
                     },

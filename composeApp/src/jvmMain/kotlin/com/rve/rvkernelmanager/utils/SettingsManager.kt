@@ -33,37 +33,60 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import java.io.File
 
-data class AppSettings(val seedColorArgb: Int = 0xFFEBAC00.toInt())
+data class AppSettings(
+    val seedColorArgb: Int = 0xFFEBAC00.toInt(),
+    val isDark: Boolean? = null,
+)
 
 object SettingsManager {
     private val configDir = File(System.getProperty("user.home"), ".config/rvkernel-manager")
     private val configFile = File(configDir, "rvkernel-manager.conf")
 
-    fun loadSettings(): AppSettings = try {
+    private fun readConfigMap(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
         if (configFile.exists()) {
-            val content = configFile.readText()
-
-            val hexColorString = content.lines()
-                .find { it.trim().startsWith("color_scheme") }
-                ?.substringAfter("=")
-                ?.trim()
-                ?.removeSurrounding("\"")
-
-            if (hexColorString != null) {
-                try {
-                    val cleanHex = hexColorString.removePrefix("#")
-                    val colorInt = cleanHex.toLong(16).toInt()
-                    AppSettings(seedColorArgb = colorInt)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    AppSettings()
+            configFile.readLines().forEach { line ->
+                val trimmed = line.trim()
+                if (trimmed.contains("=")) {
+                    val key = trimmed.substringBefore("=").trim()
+                    val value = trimmed.substringAfter("=").trim().removeSurrounding("\"")
+                    map[key] = value
                 }
-            } else {
-                AppSettings()
             }
-        } else {
-            AppSettings()
         }
+        return map
+    }
+
+    private fun writeConfigMap(map: Map<String, String>) {
+        if (!configDir.exists()) {
+            configDir.mkdirs()
+        }
+        val content = map.entries.joinToString("\n") { (key, value) ->
+            if (value == "true" || value == "false") {
+                "$key = $value"
+            } else {
+                "$key = \"$value\""
+            }
+        }
+        configFile.writeText(content + "\n")
+    }
+
+    fun loadSettings(): AppSettings = try {
+        val map = readConfigMap()
+
+        val seedColorArgb = map["color_scheme"]?.let { hexString ->
+            try {
+                val cleanHex = hexString.removePrefix("#")
+                cleanHex.toLong(16).toInt()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        } ?: AppSettings().seedColorArgb
+
+        val isDark = map["dark_mode"]?.toBooleanStrictOrNull()
+
+        AppSettings(seedColorArgb = seedColorArgb, isDark = isDark)
     } catch (e: Exception) {
         e.printStackTrace()
         AppSettings()
@@ -71,17 +94,22 @@ object SettingsManager {
 
     fun saveColor(color: Color) {
         try {
-            if (!configDir.exists()) {
-                configDir.mkdirs()
-            }
+            val map = readConfigMap()
+            map["color_scheme"] = "#${"%08X".format(color.toArgb())}"
+            writeConfigMap(map)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
-            val hexString = "#${"%08X".format(color.toArgb())}"
-
-            val configContent = "color_scheme = \"$hexString\"\n"
-
-            configFile.writeText(configContent)
+    fun saveDarkMode(isDark: Boolean) {
+        try {
+            val map = readConfigMap()
+            map["dark_mode"] = isDark.toString()
+            writeConfigMap(map)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 }
+
