@@ -44,45 +44,58 @@ import com.rve.rvkernelmanager.utils.Utils.getUsername
 import com.rve.rvkernelmanager.utils.Utils.isSwapActive
 import com.rve.rvkernelmanager.utils.Utils.isZramActive
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    val deviceInfo: StateFlow<DeviceInfo> = flow {
-        val staticData = DeviceInfo(
-            user = getUsername(),
-            hostname = getHostname(),
-            os = getOS(),
-            cpu = getCpuModel(),
-            gpu = getGpuModel(),
-            isZramActive = isZramActive(),
-            zram = getTotalZram(),
-            isSwapActive = isSwapActive(),
-            swap = getTotalSwap(),
-            kernel = getKernelVersion(),
-            ram = getRamStatus(),
-        )
+    private val _deviceInfo = MutableStateFlow(DeviceInfo())
+    val deviceInfo: StateFlow<DeviceInfo> = _deviceInfo
 
-        emit(staticData)
+    private var ramJob: Job? = null
 
-        while (true) {
-            delay(3000)
+    init {
+        getDeviceInfo()
+    }
 
-            val updatedData = staticData.copy(
+    private fun getDeviceInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _deviceInfo.value = DeviceInfo(
+                user = getUsername(),
+                hostname = getHostname(),
+                os = getOS(),
+                cpu = getCpuModel(),
+                gpu = getGpuModel(),
+                isZramActive = isZramActive(),
+                zram = getTotalZram(),
+                isSwapActive = isSwapActive(),
+                swap = getTotalSwap(),
+                kernel = getKernelVersion(),
                 ram = getRamStatus(),
             )
-
-            emit(updatedData)
         }
     }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = DeviceInfo(),
-        )
+
+    fun updateRamStatus() {
+        ramJob?.cancel()
+
+        ramJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                delay(3000)
+                val currentRam = getRamStatus()
+                _deviceInfo.update { currentState ->
+                    currentState.copy(ram = currentRam)
+                }
+            }
+        }
+    }
+
+    fun stopRamJob() {
+        ramJob?.cancel()
+        ramJob = null
+    }
 }

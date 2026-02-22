@@ -54,6 +54,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +84,13 @@ import rvkernel_manager_linux.composeapp.generated.resources.ubuntu_logo
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
     val deviceInfo by viewModel.deviceInfo.collectAsStateWithLifecycle()
+
+    DisposableEffect(Unit) {
+        viewModel.updateRamStatus()
+        onDispose {
+            viewModel.stopRamJob()
+        }
+    }
 
     Scaffold { innerPadding ->
         val osIcons = when {
