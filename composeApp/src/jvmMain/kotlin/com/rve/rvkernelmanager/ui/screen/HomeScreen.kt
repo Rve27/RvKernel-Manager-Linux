@@ -39,15 +39,23 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,6 +64,7 @@ import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -143,12 +152,6 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                 title = "GPU",
                 summary = deviceInfo.gpu,
             ),
-            HomeItem(
-                icon = AppIcon.ImageVectorIcon(MaterialSymbols.RoundedFilled.Memory),
-                containerIconShape = MaterialShapes.Square.toShape(),
-                title = "RAM",
-                summary = deviceInfo.ram,
-            ),
         )
 
         Box(
@@ -200,6 +203,14 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                         containerIconShape = item.containerIconShape,
                         title = item.title,
                         summary = item.summary,
+                    )
+                }
+
+                item(span = { GridItemSpan(minOf(2, maxLineSpan)) }) {
+                    RamUsageCard(
+                        ramTotal = deviceInfo.ramTotal,
+                        ramUsed = deviceInfo.ramUsed,
+                        ramFree = deviceInfo.ramFree,
                     )
                 }
 
@@ -265,6 +276,63 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel { HomeViewModel() }) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun RamUsageCard(ramTotal: String, ramUsed: String, ramFree: String) {
+    val totalVal = ramTotal.substringBefore(" ").toFloatOrNull() ?: 0f
+    val usedVal = ramUsed.substringBefore(" ").toFloatOrNull() ?: 0f
+    val progress = if (totalVal > 0f) usedVal / totalVal else 0f
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceBright,
+        ),
+        shape = MaterialTheme.shapes.extraLarge,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .clip(MaterialShapes.Square.toShape())
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = MaterialSymbols.RoundedFilled.Memory,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+                Column {
+                    Text(
+                        text = "RAM Usage",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = "$ramUsed / $ramTotal (Free: $ramFree)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            LinearWavyProgressIndicator(
+                progress = { progress },
+                modifier = Modifier.fillMaxWidth().clip(CircleShape),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
         }
     }
 }

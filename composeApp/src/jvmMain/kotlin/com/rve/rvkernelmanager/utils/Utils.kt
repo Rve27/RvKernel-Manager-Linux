@@ -97,10 +97,39 @@ object Utils {
         "unknown"
     }
 
-    fun getRamStatus(): String = runCatching {
+    fun getTotalRam(): String = runCatching {
+        File("/proc/meminfo").useLines { seq ->
+            val totalLine = seq.find { it.startsWith("MemTotal:") }
+            val totalKb = totalLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+            if (totalKb > 0) {
+                val df = DecimalFormat("#.##")
+                "${df.format(totalKb / (1024.0 * 1024.0))} GB"
+            } else {
+                "unknown"
+            }
+        }
+    }.getOrElse {
+        "unknown"
+    }
+
+    fun getFreeRam(): String = runCatching {
+        File("/proc/meminfo").useLines { seq ->
+            val availableLine = seq.find { it.startsWith("MemAvailable:") }
+            val availableKb = availableLine?.replace(Regex("\\D+"), "")?.toLong() ?: 0L
+            if (availableKb > 0) {
+                val df = DecimalFormat("#.##")
+                "${df.format(availableKb / (1024.0 * 1024.0))} GB"
+            } else {
+                "unknown"
+            }
+        }
+    }.getOrElse {
+        "unknown"
+    }
+
+    fun getUsedRam(): String = runCatching {
         File("/proc/meminfo").useLines { seq ->
             val lines = seq.toList()
-
             val totalLine = lines.find { it.startsWith("MemTotal:") }
             val availableLine = lines.find { it.startsWith("MemAvailable:") }
 
@@ -109,17 +138,13 @@ object Utils {
 
             if (totalKb > 0) {
                 val usedKb = totalKb - availableKb
-
                 val df = DecimalFormat("#.##")
-                fun toGb(kb: Long): String = df.format(kb / (1024.0 * 1024.0))
-
-                "Total: ${toGb(totalKb)} GB\nUsed: ${toGb(usedKb)} GB\nFree: ${toGb(availableKb)} GB"
+                "${df.format(usedKb / (1024.0 * 1024.0))} GB"
             } else {
                 "unknown"
             }
         }
-    }.getOrElse { e ->
-        Log.e("Utils", "Failed to get RAM status", e)
+    }.getOrElse {
         "unknown"
     }
 
@@ -191,7 +216,8 @@ object Utils {
     }
 
     fun getKernelVersion(): String = runCatching {
-        File("/proc/version").readText().trim()
+        val versionInfo = File("/proc/version").readText().trim()
+        versionInfo.split(" ").getOrNull(2) ?: versionInfo
     }.getOrElse { e ->
         Log.e("Utils", "Failed to read /proc/version", e)
         "unknown"

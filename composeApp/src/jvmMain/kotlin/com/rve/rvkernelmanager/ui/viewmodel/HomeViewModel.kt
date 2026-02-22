@@ -33,13 +33,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rve.rvkernelmanager.ui.data.DeviceInfo
 import com.rve.rvkernelmanager.utils.Utils.getCpuModel
+import com.rve.rvkernelmanager.utils.Utils.getFreeRam
 import com.rve.rvkernelmanager.utils.Utils.getGpuModel
 import com.rve.rvkernelmanager.utils.Utils.getHostname
 import com.rve.rvkernelmanager.utils.Utils.getKernelVersion
 import com.rve.rvkernelmanager.utils.Utils.getOS
-import com.rve.rvkernelmanager.utils.Utils.getRamStatus
+import com.rve.rvkernelmanager.utils.Utils.getTotalRam
 import com.rve.rvkernelmanager.utils.Utils.getTotalSwap
 import com.rve.rvkernelmanager.utils.Utils.getTotalZram
+import com.rve.rvkernelmanager.utils.Utils.getUsedRam
 import com.rve.rvkernelmanager.utils.Utils.getUsername
 import com.rve.rvkernelmanager.utils.Utils.isSwapActive
 import com.rve.rvkernelmanager.utils.Utils.isZramActive
@@ -75,7 +77,9 @@ class HomeViewModel : ViewModel() {
                 isSwapActive = isSwapActive(),
                 swap = getTotalSwap(),
                 kernel = getKernelVersion(),
-                ram = getRamStatus(),
+                ramTotal = getTotalRam(),
+                ramUsed = getUsedRam(),
+                ramFree = getFreeRam(),
             )
         }
     }
@@ -86,9 +90,15 @@ class HomeViewModel : ViewModel() {
         ramJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 delay(3000)
-                val currentRam = getRamStatus()
+                val currentRamTotal = getTotalRam()
+                val currentRamUsed = getUsedRam()
+                val currentRamFree = getFreeRam()
                 _deviceInfo.update { currentState ->
-                    currentState.copy(ram = currentRam)
+                    currentState.copy(
+                        ramTotal = currentRamTotal,
+                        ramUsed = currentRamUsed,
+                        ramFree = currentRamFree,
+                    )
                 }
             }
         }
