@@ -44,7 +44,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)
             packageName = "rvkernel-manager"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
             description = "RvKernel Manager for Linux"
             vendor = "RvEnterprises"
 
