@@ -5,11 +5,11 @@ composeMultiplatform = "1.10.1"
 kotlin = "2.3.10"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.10.0"
-material3 = "1.11.0-alpha02"
+material3 = "1.11.0-alpha03"
 navigation = "2.9.2"
 composables-icons = "2.2.1"
 materialKolor = "4.1.1"
-spotless = "8.2.1"
+spotless = "8.3.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
